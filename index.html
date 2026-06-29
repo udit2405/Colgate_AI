@@ -1,1 +1,1425 @@
-aa
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Closeup GEO Operating System</title>
+  <meta name="description" content="Closeup GEO OS — an internal Generative Engine Optimization operating system that runs the full GEO consulting workflow." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <style>
+/* ============================================================
+   Closeup GEO OS — Enterprise theme
+   ============================================================ */
+:root{
+  --bg:#0b1020;
+  --bg-2:#0f1530;
+  --panel:#ffffff;
+  --panel-2:#f6f8fc;
+  --panel-3:#eef2f9;
+  --ink:#0d1426;
+  --ink-2:#41506b;
+  --ink-3:#7888a3;
+  --line:#e3e9f3;
+  --line-2:#d3dcec;
+
+  --brand:#e6007e;        /* Closeup magenta */
+  --brand-2:#7b2ff7;      /* electric violet */
+  --brand-3:#00c2a8;      /* teal */
+  --accent:#2f6bff;       /* blue */
+  --warn:#f59e0b;
+  --bad:#ef4444;
+  --good:#16a34a;
+
+  --sidebar:#0b1020;
+  --sidebar-2:#11183a;
+  --sidebar-ink:#aab6d6;
+  --sidebar-ink-2:#6b78a0;
+
+  --radius:14px;
+  --radius-sm:10px;
+  --shadow:0 1px 2px rgba(13,20,38,.06), 0 8px 24px rgba(13,20,38,.06);
+  --shadow-lg:0 18px 50px rgba(13,20,38,.18);
+  --font:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  --display:'Sora','Inter',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{
+  font-family:var(--font);
+  color:var(--ink);
+  background:var(--panel-2);
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent);text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+::selection{background:rgba(230,0,126,.18)}
+
+/* ---------- Boot ---------- */
+.boot{position:fixed;inset:0;background:radial-gradient(1200px 600px at 20% -10%,#1a2350,#0b1020);display:flex;align-items:center;justify-content:center;z-index:60;color:#fff}
+.boot-inner{width:340px;text-align:center}
+.boot-logo{width:70px;height:70px;margin:0 auto 18px;border-radius:18px;background:linear-gradient(135deg,var(--brand),var(--brand-2));display:flex;align-items:center;justify-content:center;box-shadow:0 12px 40px rgba(123,47,247,.45)}
+.boot-mark{font-family:var(--display);font-weight:800;font-size:34px;color:#fff}
+.boot-title{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:.2px}
+.boot-sub{color:#9fb0d8;font-size:13px;margin-top:6px}
+.boot-bar{height:6px;border-radius:99px;background:rgba(255,255,255,.12);margin:22px 0 10px;overflow:hidden}
+.boot-bar-fill{height:100%;width:0;background:linear-gradient(90deg,var(--brand),var(--brand-3));transition:width .25s ease}
+.boot-step{font-size:12px;color:#7e8db5;font-family:var(--mono)}
+
+/* ---------- file:// warning ---------- */
+.file-warning{position:fixed;inset:0;background:#0b1020;display:flex;align-items:center;justify-content:center;z-index:70;padding:24px}
+.fw-card{max-width:560px;background:#11183a;border:1px solid #25305f;border-radius:18px;padding:34px;color:#dbe3fb}
+.fw-card i{color:var(--warn);width:34px;height:34px}
+.fw-card h2{font-family:var(--display);margin:14px 0 8px}
+.fw-card p{color:#a9b6dd;line-height:1.6;font-size:14px}
+.fw-card pre{background:#0b1020;border:1px solid #25305f;border-radius:10px;padding:12px 14px;color:#7fe7d2;font-family:var(--mono);font-size:13px;overflow:auto}
+.fw-card code{background:#0b1020;border:1px solid #25305f;border-radius:6px;padding:1px 6px;font-family:var(--mono);font-size:12px;color:#9ad0ff}
+
+/* ---------- App layout ---------- */
+.app{display:grid;grid-template-columns:264px 1fr;min-height:100vh}
+
+/* ---------- Sidebar ---------- */
+.sidebar{background:linear-gradient(180deg,var(--sidebar),#0a0f24);color:var(--sidebar-ink);display:flex;flex-direction:column;padding:18px 14px;position:sticky;top:0;height:100vh;border-right:1px solid #1b234a}
+.brand{display:flex;gap:12px;align-items:center;padding:6px 8px 16px}
+.brand-mark{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--brand),var(--brand-2));display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:800;color:#fff;font-size:22px}
+.brand-name{font-family:var(--display);font-weight:700;color:#fff;font-size:16px;line-height:1.1}
+.brand-tag{font-size:11px;color:var(--sidebar-ink-2);letter-spacing:.3px}
+
+.workflow-progress{padding:8px;margin-bottom:10px}
+.wp-head{display:flex;justify-content:space-between;font-size:11px;color:var(--sidebar-ink-2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+.wp-head span:last-child{color:var(--brand-3);font-weight:700}
+.wp-bar{height:6px;border-radius:99px;background:#1a2247;overflow:hidden}
+.wp-fill{height:100%;width:0;background:linear-gradient(90deg,var(--brand),var(--brand-3));transition:width .4s ease}
+
+.nav{display:flex;flex-direction:column;gap:2px;overflow-y:auto;flex:1;padding-right:2px}
+.nav::-webkit-scrollbar{width:6px}
+.nav::-webkit-scrollbar-thumb{background:#1f2950;border-radius:99px}
+.nav-item{display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:10px;color:var(--sidebar-ink);font-size:13.5px;font-weight:500;border:1px solid transparent;position:relative}
+.nav-item .ni-num{width:22px;height:22px;border-radius:7px;background:#161e44;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--sidebar-ink-2);font-family:var(--mono);flex:0 0 auto}
+.nav-item i{width:17px;height:17px;color:var(--sidebar-ink-2)}
+.nav-item:hover{background:#141c40;color:#fff}
+.nav-item.active{background:linear-gradient(90deg,rgba(230,0,126,.18),rgba(123,47,247,.10));color:#fff;border-color:#34306a}
+.nav-item.active i,.nav-item.active .ni-num{color:#fff}
+.nav-item.active .ni-num{background:linear-gradient(135deg,var(--brand),var(--brand-2))}
+.nav-item .ni-check{margin-left:auto;width:15px;height:15px;color:var(--brand-3);display:none}
+.nav-item.done .ni-check{display:block}
+.nav-item.locked{opacity:.45}
+
+.sidebar-foot{padding-top:12px;border-top:1px solid #1b234a;margin-top:10px;display:flex;flex-direction:column;gap:8px}
+.btn-ghost{background:transparent;border:1px solid #283260;color:var(--sidebar-ink);border-radius:9px;padding:8px 10px;font-size:12.5px;display:flex;align-items:center;gap:8px;justify-content:center}
+.btn-ghost:hover{background:#141c40;color:#fff}
+.btn-block{width:100%}
+.btn-ghost i{width:15px;height:15px}
+.env-pill{font-size:11px;color:var(--sidebar-ink-2);text-align:center;font-family:var(--mono)}
+
+/* ---------- Main ---------- */
+.main{display:flex;flex-direction:column;min-width:0}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 26px;background:rgba(255,255,255,.85);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.crumb-kicker{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--brand);font-weight:700}
+.crumb-title{font-family:var(--display);font-size:20px;margin:1px 0 0;font-weight:700}
+.icon-btn{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;color:var(--ink-2)}
+.icon-btn:hover{background:var(--panel-3)}
+.icon-btn i{width:18px;height:18px}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.search-mini{display:flex;align-items:center;gap:8px;background:var(--panel-3);border:1px solid var(--line);border-radius:10px;padding:7px 12px;width:240px}
+.search-mini i{width:16px;height:16px;color:var(--ink-3)}
+.search-mini input{border:0;background:transparent;outline:none;font-size:13px;width:100%;color:var(--ink)}
+
+.btn-primary{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;border:0;border-radius:10px;padding:9px 16px;font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:8px;box-shadow:0 6px 18px rgba(123,47,247,.28)}
+.btn-primary:hover{filter:brightness(1.05)}
+.btn-primary i{width:16px;height:16px}
+.btn-soft{background:#fff;border:1px solid var(--line);color:var(--ink-2);border-radius:10px;padding:9px 14px;font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:8px}
+.btn-soft:hover{background:var(--panel-3)}
+.btn-soft i{width:16px;height:16px}
+
+.view{padding:26px;max-width:1280px;width:100%;margin:0 auto;flex:1}
+.appfoot{display:flex;justify-content:space-between;padding:14px 26px;color:var(--ink-3);font-size:12px;border-top:1px solid var(--line)}
+
+/* ---------- Generic components ---------- */
+.page-intro{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:20px;flex-wrap:wrap}
+.page-intro .pi-text{max-width:680px}
+.page-intro h2{font-family:var(--display);font-size:24px;margin:0 0 6px}
+.page-intro p{color:var(--ink-2);line-height:1.6;margin:0;font-size:14px}
+.pi-actions{display:flex;gap:10px;flex-wrap:wrap}
+
+.section-title{font-family:var(--display);font-size:15px;font-weight:700;margin:26px 0 12px;display:flex;align-items:center;gap:9px;color:var(--ink)}
+.section-title i{width:17px;height:17px;color:var(--brand)}
+.section-title .st-pill{margin-left:8px;font-size:11px;font-weight:600;color:var(--ink-3);background:var(--panel-3);border:1px solid var(--line);padding:2px 9px;border-radius:99px;font-family:var(--mono)}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.card-pad{padding:18px}
+.grid{display:grid;gap:16px}
+.g-2{grid-template-columns:repeat(2,1fr)}
+.g-3{grid-template-columns:repeat(3,1fr)}
+.g-4{grid-template-columns:repeat(4,1fr)}
+.g-5{grid-template-columns:repeat(5,1fr)}
+@media(max-width:1100px){.g-4,.g-5{grid-template-columns:repeat(2,1fr)}.g-3{grid-template-columns:1fr}}
+@media(max-width:760px){.app{grid-template-columns:1fr}.sidebar{display:none}.g-2,.g-4,.g-5{grid-template-columns:1fr}}
+
+/* KPI cards */
+.kpi{padding:16px 18px;border-radius:var(--radius);background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);position:relative;overflow:hidden}
+.kpi::after{content:"";position:absolute;right:-20px;top:-20px;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,rgba(230,0,126,.10),transparent 70%)}
+.kpi .k-label{font-size:12px;color:var(--ink-3);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+.kpi .k-val{font-family:var(--display);font-size:30px;font-weight:800;margin:6px 0 2px;line-height:1}
+.kpi .k-sub{font-size:12px;color:var(--ink-2)}
+.k-delta{font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:3px;margin-top:6px}
+.k-delta.up{color:var(--good)}.k-delta.down{color:var(--bad)}
+.k-delta i{width:13px;height:13px}
+
+/* Tables */
+.tbl-wrap{overflow:auto;border:1px solid var(--line);border-radius:var(--radius);background:#fff}
+table.tbl{width:100%;border-collapse:collapse;font-size:13px;min-width:560px}
+table.tbl th{background:var(--panel-2);text-align:left;padding:11px 14px;font-weight:600;color:var(--ink-2);border-bottom:1px solid var(--line);white-space:nowrap;position:sticky;top:0}
+table.tbl td{padding:11px 14px;border-bottom:1px solid var(--line);color:var(--ink)}
+table.tbl tr:last-child td{border-bottom:0}
+table.tbl tr:hover td{background:var(--panel-2)}
+.cell-strong{font-weight:700}
+.cell-brand{color:var(--brand);font-weight:700}
+
+/* Badges & chips */
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:99px;border:1px solid transparent}
+.badge i{width:12px;height:12px}
+.b-good{background:rgba(22,163,74,.10);color:var(--good);border-color:rgba(22,163,74,.2)}
+.b-warn{background:rgba(245,158,11,.12);color:#b45309;border-color:rgba(245,158,11,.25)}
+.b-bad{background:rgba(239,68,68,.10);color:var(--bad);border-color:rgba(239,68,68,.2)}
+.b-info{background:rgba(47,107,255,.10);color:var(--accent);border-color:rgba(47,107,255,.2)}
+.b-muted{background:var(--panel-3);color:var(--ink-2);border-color:var(--line-2)}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:5px 11px;border-radius:99px;background:var(--panel-3);border:1px solid var(--line);color:var(--ink-2);font-weight:500}
+.chip.sel{background:linear-gradient(135deg,rgba(230,0,126,.12),rgba(123,47,247,.10));border-color:#d9c4f5;color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+
+/* Forms */
+.field{margin-bottom:16px}
+.field label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-2);margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;border:1px solid var(--line-2);border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit;color:var(--ink);background:#fff;outline:none;transition:border .15s,box-shadow .15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--brand-2);box-shadow:0 0 0 3px rgba(123,47,247,.12)}
+.field .hint{font-size:11.5px;color:var(--ink-3);margin-top:5px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){.field-row{grid-template-columns:1fr}}
+
+/* Progress bars in tables / scores */
+.meter{height:8px;border-radius:99px;background:var(--panel-3);overflow:hidden;min-width:90px}
+.meter > span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--brand),var(--brand-2))}
+.meter.teal > span{background:linear-gradient(90deg,var(--brand-3),#2f9bff)}
+.score-pill{font-family:var(--mono);font-weight:600;font-size:12.5px}
+
+/* Funnel columns */
+.funnel{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:900px){.funnel{grid-template-columns:1fr}}
+.fcol{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column}
+.fcol-head{padding:13px 16px;color:#fff;font-weight:700;font-family:var(--display);font-size:14px;display:flex;justify-content:space-between;align-items:center}
+.fcol-head .fc-count{background:rgba(255,255,255,.2);border-radius:99px;padding:2px 10px;font-size:12px}
+.fcol.aware .fcol-head{background:linear-gradient(135deg,#2f6bff,#5b8cff)}
+.fcol.consider .fcol-head{background:linear-gradient(135deg,#7b2ff7,#a35bff)}
+.fcol.decide .fcol-head{background:linear-gradient(135deg,#e6007e,#ff5ca8)}
+.fcol-body{padding:12px;display:flex;flex-direction:column;gap:8px;overflow:auto;max-height:520px}
+.prompt-card{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--panel-2);font-size:13px;line-height:1.45}
+.prompt-card .pc-meta{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.pc-tag{font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:6px;background:#fff;border:1px solid var(--line);color:var(--ink-3)}
+.pc-tag.win{color:var(--good);border-color:rgba(22,163,74,.3);background:rgba(22,163,74,.06)}
+.pc-tag.gap{color:var(--bad);border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.06)}
+
+/* Checklist items (technical audit) */
+.check-item{display:flex;gap:12px;align-items:flex-start;padding:13px 16px;border-bottom:1px solid var(--line)}
+.check-item:last-child{border-bottom:0}
+.check-ic{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.check-ic i{width:16px;height:16px}
+.ci-pass{background:rgba(22,163,74,.12);color:var(--good)}
+.ci-fail{background:rgba(239,68,68,.12);color:var(--bad)}
+.ci-partial{background:rgba(245,158,11,.14);color:#b45309}
+.check-body{flex:1;min-width:0}
+.check-body h4{margin:0 0 3px;font-size:13.5px}
+.check-body p{margin:0;font-size:12.5px;color:var(--ink-2);line-height:1.5}
+
+/* Recommendation / kanban cards */
+.rec-card{border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:8px}
+.rec-card h4{margin:0;font-size:14px}
+.rec-card p{margin:0;font-size:12.5px;color:var(--ink-2);line-height:1.5}
+.rec-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.rec-foot{display:flex;justify-content:space-between;align-items:center;border-top:1px dashed var(--line);padding-top:9px;margin-top:2px}
+.impact-dots{display:flex;gap:3px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--line-2)}
+.dot.on{background:var(--brand)}
+
+/* Timeline / roadmap */
+.roadmap{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:1000px){.roadmap{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.roadmap{grid-template-columns:1fr}}
+.phase{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.phase-h{font-family:var(--display);font-weight:700;font-size:14px;margin-bottom:4px}
+.phase-when{font-size:11.5px;color:var(--brand);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:12px}
+.phase ul{margin:0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+.phase li{font-size:12.5px;color:var(--ink-2);line-height:1.45;padding-left:20px;position:relative}
+.phase li::before{content:"";position:absolute;left:0;top:6px;width:8px;height:8px;border-radius:50%;background:var(--brand-2)}
+
+/* Chart container */
+.chart-box{position:relative;height:300px}
+.chart-box.sm{height:240px}
+.chart-box.lg{height:360px}
+
+/* Stepper / process map */
+.process-map{display:flex;gap:0;overflow-x:auto;padding:4px 0 14px}
+.pm-step{flex:0 0 auto;display:flex;align-items:center;gap:0}
+.pm-node{display:flex;flex-direction:column;align-items:center;gap:6px;width:96px;text-align:center}
+.pm-circle{width:38px;height:38px;border-radius:50%;border:2px solid var(--line-2);background:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--ink-3);font-family:var(--mono);font-size:13px}
+.pm-step.done .pm-circle{background:linear-gradient(135deg,var(--brand),var(--brand-2));border-color:transparent;color:#fff}
+.pm-step.active .pm-circle{border-color:var(--brand);color:var(--brand)}
+.pm-label{font-size:10.5px;color:var(--ink-2);line-height:1.2}
+.pm-line{width:34px;height:2px;background:var(--line-2);margin-top:-22px}
+.pm-step.done + .pm-step .pm-line{background:var(--brand)}
+
+/* Empty / locked states */
+.locked-state{text-align:center;padding:60px 20px;color:var(--ink-2)}
+.locked-state .ls-ic{width:60px;height:60px;border-radius:16px;background:var(--panel-3);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.locked-state .ls-ic i{width:28px;height:28px;color:var(--ink-3)}
+.locked-state h3{font-family:var(--display);margin:0 0 8px}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:11px 18px;border-radius:11px;font-size:13.5px;font-weight:500;opacity:0;pointer-events:none;transition:all .25s;z-index:80;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:9px}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast i{width:16px;height:16px;color:var(--brand-3)}
+
+/* Modal */
+.modal-wrap{position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;padding:24px}
+.modal-backdrop{position:absolute;inset:0;background:rgba(8,12,28,.55);backdrop-filter:blur(3px)}
+.modal-card{position:relative;background:#fff;border-radius:18px;max-width:760px;width:100%;max-height:86vh;overflow:auto;box-shadow:var(--shadow-lg);padding:26px}
+.modal-card h3{font-family:var(--display);margin:0 0 6px}
+.modal-close{position:absolute;right:16px;top:16px}
+
+/* generated content blocks */
+.gen-block{border:1px solid var(--line);border-radius:12px;margin-bottom:14px;overflow:hidden}
+.gen-block-h{background:var(--panel-2);padding:11px 15px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line)}
+.gen-block-h h4{margin:0;font-size:13.5px;display:flex;gap:8px;align-items:center}
+.gen-block-b{padding:15px;font-size:13px;line-height:1.6;color:var(--ink)}
+.gen-block-b pre{white-space:pre-wrap;font-family:var(--mono);font-size:12px;background:var(--panel-2);padding:12px;border-radius:8px;border:1px solid var(--line);overflow:auto}
+.copy-btn{font-size:11.5px;color:var(--ink-2);background:#fff;border:1px solid var(--line);border-radius:7px;padding:4px 9px;display:flex;align-items:center;gap:5px}
+.copy-btn:hover{background:var(--panel-3)}
+.copy-btn i{width:13px;height:13px}
+
+.list-clean{margin:0;padding-left:18px}
+.list-clean li{margin-bottom:7px;line-height:1.5;font-size:13px;color:var(--ink-2)}
+
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:18px;flex-wrap:wrap}
+.tab{padding:9px 14px;font-size:13px;font-weight:600;color:var(--ink-3);border:0;background:transparent;border-bottom:2px solid transparent}
+.tab.active{color:var(--brand);border-bottom-color:var(--brand)}
+.tab:hover{color:var(--ink)}
+
+.note{background:linear-gradient(135deg,rgba(47,107,255,.06),rgba(123,47,247,.05));border:1px solid #dfe6fb;border-radius:12px;padding:13px 16px;font-size:13px;color:var(--ink-2);line-height:1.55;display:flex;gap:10px}
+.note i{width:17px;height:17px;color:var(--accent);flex:0 0 auto;margin-top:2px}
+
+.split{display:grid;grid-template-columns:1.3fr 1fr;gap:18px}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ink-2);margin-top:10px}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+
+</style>
+</head>
+<body>
+  <!-- Loading boot screen -->
+  <div id="boot" class="boot">
+    <div class="boot-inner">
+      <div class="boot-logo">
+        <span class="boot-mark">C</span>
+      </div>
+      <div class="boot-title">Closeup GEO OS</div>
+      <div class="boot-sub">Initialising the GEO operating system…</div>
+      <div class="boot-bar"><div class="boot-bar-fill" id="bootFill"></div></div>
+      <div class="boot-step" id="bootStep">Loading data layer</div>
+    </div>
+  </div>
+
+  <!-- App shell -->
+  <div id="app" class="app" style="display:none">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark" id="brandMark">C</div>
+        <div class="brand-meta">
+          <div class="brand-name" id="brandName">Closeup</div>
+          <div class="brand-tag">GEO Operating System</div>
+        </div>
+      </div>
+
+      <div class="workflow-progress">
+        <div class="wp-head">
+          <span>Workflow</span>
+          <span id="wpPercent">0%</span>
+        </div>
+        <div class="wp-bar"><div class="wp-fill" id="wpFill"></div></div>
+      </div>
+
+      <nav class="nav" id="nav"><!-- steps injected --></nav>
+
+      <div class="sidebar-foot">
+        <button class="btn-ghost btn-block" id="resetBtn">
+          <i data-lucide="rotate-ccw"></i><span>Reset workspace</span>
+        </button>
+        <div class="env-pill" id="envPill">data: seed v1</div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="icon-btn" id="prevBtn" title="Previous step"><i data-lucide="chevron-left"></i></button>
+          <div class="crumb">
+            <span class="crumb-kicker" id="crumbStep">Step 1</span>
+            <h1 class="crumb-title" id="crumbTitle">Brand Setup</h1>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <div class="search-mini">
+            <i data-lucide="search"></i>
+            <input id="globalSearch" placeholder="Search prompts, gaps, tasks…" />
+          </div>
+          <button class="btn-soft" id="exportBtn"><i data-lucide="download"></i><span>Export</span></button>
+          <button class="btn-primary" id="nextBtn"><span>Next step</span><i data-lucide="arrow-right"></i></button>
+        </div>
+      </header>
+
+      <section class="view" id="view"><!-- step view injected --></section>
+
+      <footer class="appfoot">
+        <span>Closeup GEO OS · research preview</span>
+        <span id="footMeta"></span>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Modal -->
+  <div id="modal" class="modal-wrap" style="display:none">
+    <div class="modal-backdrop" data-close="1"></div>
+    <div class="modal-card" id="modalCard"></div>
+  </div>
+
+  <script>
+window.GEO={data:{"config":{"app":{"name":"Closeup GEO Operating System","shortName":"Closeup GEO OS","version":"1.0.0","dataVersion":"seed v1 · Jun 2026","reportPeriod":"Q2 FY26 (Apr–Jun 2026)","market":"India","currency":"INR"},"steps":[{"id":"brand","num":1,"title":"Brand Setup","icon":"building-2","desc":"Define the brand, market and competitive set the whole GEO workflow runs on."},{"id":"audit","num":2,"title":"Run GEO Audit","icon":"scan-search","desc":"Crawl & inventory existing content surfaces and score them for AI-answer readiness."},{"id":"prompts","num":3,"title":"Prompt Universe","icon":"messages-square","desc":"Generate and cluster the AI prompts customers actually ask, across the buying journey."},{"id":"competitors","num":4,"title":"Competitor Intelligence","icon":"swords","desc":"Benchmark Closeup against rivals on content, authority, schema and citation coverage."},{"id":"gaps","num":5,"title":"Content Gap Analysis","icon":"puzzle","desc":"Auto-detect the missing assets that cost Closeup AI citations."},{"id":"technical","num":6,"title":"Technical GEO Audit","icon":"settings-2","desc":"Check schema, crawlability, llms.txt, Core Web Vitals and AI render-ability."},{"id":"authority","num":7,"title":"Authority Analysis","icon":"award","desc":"Measure off-site authority signals AI engines lean on to decide who to cite."},{"id":"recommend","num":8,"title":"AI Recommendations","icon":"sparkles","desc":"Turn every finding into a prioritised, sequenced action plan."},{"id":"content","num":9,"title":"Content Generation","icon":"pen-line","desc":"Generate briefs, FAQs, schema and channel-ready copy from the gaps found."},{"id":"dashboard","num":10,"title":"Executive Dashboard","icon":"layout-dashboard","desc":"The board-level view — generated only after the workflow has run."}],"scoring":{"geoReadinessWeights":{"content":0.3,"technical":0.25,"authority":0.25,"schema":0.2},"funnelStages":["Awareness","Consideration","Decision"]}},"brand":{"brand":{"name":"Closeup","website":"https://www.closeup.in","parent":"Hindustan Unilever (HUL)","country":"India","tagline":"Confidence that gets you closer","positioning":"Freshness, long-lasting fresh breath and confidence for young adults; gel toothpaste pioneer in India.","categories":["Toothpaste (gel)","Whitening toothpaste","Toothbrush","Mouthwash","Fresh breath / oral care"],"audience":[{"name":"Gen Z & young millennials","detail":"18–28, metro & tier-1, dating/social confidence, fresh-breath led"},{"name":"Young couples","detail":"Closeness, confidence, romance positioning"},{"name":"Value-conscious families","detail":"Tier-2/3, price-sensitive, multi-pack buyers"}],"primaryGoals":["Win AI-engine visibility for fresh-breath, whitening and confidence queries","Close citation gap vs Colgate & Sensodyne in AI answers","Build owned + earned authority that AI engines cite","Convert GEO visibility into category traffic and consideration"]},"competitors":[{"id":"colgate","name":"Colgate","website":"colgate.com/en-in","type":"Market leader","focus":"Cavity protection, dentist authority, full range","color":"#d11f2d"},{"id":"sensodyne","name":"Sensodyne","website":"sensodyne.com/en-in","type":"Specialist leader","focus":"Sensitivity, dentist-recommended, science","color":"#0a5ca8"},{"id":"perfora","name":"Perfora","website":"perfora.in","type":"D2C challenger","focus":"Premium D2C, electric brushes, content-rich","color":"#1f7a5a"},{"id":"oralb","name":"Oral-B","website":"oralb.co.in","type":"Brush leader","focus":"Brushes, electric, dentist endorsement","color":"#005bbb"},{"id":"pepsodent","name":"Pepsodent","website":"pepsodent.in","type":"HUL sibling / value","focus":"Germ protection, family, value","color":"#0aa0c8"}],"aiEngines":["ChatGPT","Google AI Overviews","Perplexity","Gemini","Claude"]},"audit":{"summary":{"pagesCrawled":142,"indexable":118,"aiReadyPct":34,"avgGeoReadiness":41,"lastCrawl":"2026-06-24"},"inventory":[{"type":"Product pages","icon":"package","count":28,"aiReady":11,"score":52,"issue":"Thin descriptions, no FAQ/HowTo blocks, missing Product schema on 17 SKUs."},{"type":"Blog / articles","icon":"file-text","count":34,"aiReady":9,"score":38,"issue":"Mostly campaign content; few answer-style, question-led articles AI can lift."},{"type":"FAQ pages","icon":"help-circle","count":6,"aiReady":3,"score":44,"issue":"No FAQPage schema; answers not structured for snippet extraction."},{"type":"Category pages","icon":"layout-grid","count":9,"aiReady":4,"score":49,"issue":"Good internal links but weak topical depth and comparison content."},{"type":"Buying guides","icon":"book-open","count":2,"aiReady":1,"score":30,"issue":"Almost absent — major gap vs Perfora & Colgate guide libraries."},{"type":"How-to articles","icon":"list-checks","count":4,"aiReady":1,"score":33,"issue":"No HowTo schema; steps not machine-readable."},{"type":"Videos (embedded)","icon":"play-circle","count":12,"aiReady":2,"score":28,"issue":"No transcripts, no VideoObject schema, weak descriptions."},{"type":"Comparison pages","icon":"git-compare","count":1,"aiReady":0,"score":18,"issue":"Critical gap — AI loves comparison tables; Closeup has almost none."}],"topFindings":[{"severity":"high","text":"Only 34% of indexable pages are structured in a way AI engines can confidently cite."},{"severity":"high","text":"Comparison and buying-guide content — the formats AI cites most for Decision queries — are nearly absent."},{"severity":"med","text":"Product schema present on just 11 of 28 SKUs; no Product+FAQ pairing anywhere."},{"severity":"med","text":"12 embedded videos carry no transcript or VideoObject markup, so they're invisible to AI."},{"severity":"low","text":"Blog cadence is healthy but format is campaign-led, not question-led."}]},"prompts":{"meta":{"totalPrompts":48,"method":"Generated from product attributes, search intent, customer pain points and the buying journey, then clustered by funnel stage.","seedAttributes":["fresh breath","whitening","gel toothpaste","bad breath","confidence","sensitivity","price","ingredients","kids","natural"]},"clusters":[{"stage":"Awareness","intent":"Problem & education — user has a symptom or curiosity, no brand in mind.","prompts":[{"q":"Why does my breath smell bad even after brushing?","vol":"High","closeup":false,"winner":"Colgate"},{"q":"What causes morning breath and how do I stop it?","vol":"High","closeup":false,"winner":"Colgate"},{"q":"Is gel toothpaste better than paste toothpaste?","vol":"Med","closeup":true,"winner":"Closeup"},{"q":"How often should I brush to keep my breath fresh?","vol":"Med","closeup":false,"winner":"Sensodyne"},{"q":"What ingredients make toothpaste whiten teeth?","vol":"High","closeup":false,"winner":"Colgate"},{"q":"Does mouthwash actually help with bad breath?","vol":"Med","closeup":false,"winner":"Listerine"},{"q":"What is the best way to get fresh breath all day?","vol":"High","closeup":true,"winner":"Closeup"},{"q":"Are there natural ways to whiten teeth at home?","vol":"High","closeup":false,"winner":"Perfora"}]},{"stage":"Consideration","intent":"Comparing options & approaches — user is weighing types, ingredients and brands.","prompts":[{"q":"Which toothpaste is best for fresh breath in India?","vol":"High","closeup":true,"winner":"Closeup"},{"q":"Best whitening toothpaste in India under ₹150?","vol":"High","closeup":false,"winner":"Colgate"},{"q":"Closeup vs Colgate — which is better for daily use?","vol":"High","closeup":false,"winner":"Colgate"},{"q":"Is Closeup good for whitening teeth?","vol":"Med","closeup":true,"winner":"Closeup"},{"q":"Best toothpaste for smokers' bad breath?","vol":"Med","closeup":false,"winner":"Colgate"},{"q":"Closeup vs Pepsodent — what's the difference?","vol":"Med","closeup":true,"winner":"Closeup"},{"q":"Which toothpaste do dentists recommend in India?","vol":"High","closeup":false,"winner":"Sensodyne"},{"q":"Gel vs whitening toothpaste — which should I choose?","vol":"Med","closeup":false,"winner":"Colgate"},{"q":"Best fresh-breath toothpaste for young adults?","vol":"Med","closeup":true,"winner":"Closeup"},{"q":"Affordable alternatives to expensive whitening kits?","vol":"Med","closeup":false,"winner":"Perfora"}]},{"stage":"Decision","intent":"Ready to buy — user wants the specific product, price, where to buy, or reassurance.","prompts":[{"q":"Which Closeup toothpaste is best for whitening?","vol":"Med","closeup":true,"winner":"Closeup"},{"q":"Where to buy Closeup Ever Fresh online in India?","vol":"Med","closeup":true,"winner":"Closeup"},{"q":"Closeup Diamond Attraction review — is it worth it?","vol":"Med","closeup":false,"winner":"Amazon"},{"q":"Best toothpaste under ₹100 for fresh breath?","vol":"High","closeup":false,"winner":"Colgate"},{"q":"Is Closeup safe for daily long-term use?","vol":"Low","closeup":false,"winner":"Sensodyne"},{"q":"Closeup red gel vs Closeup white — which to buy?","vol":"Low","closeup":true,"winner":"Closeup"},{"q":"Best value family pack toothpaste in India?","vol":"Med","closeup":false,"winner":"Colgate"}]}]},"competitors":{"method":"Each brand scored 0–100 on the dimensions AI engines weigh when deciding who to cite. Brand Visibility (BV) = share of AI answers featuring the brand across the prompt universe. Domain Prompt Presence (DPP) = % of the prompt universe where the brand's own domain is cited.","matrix":[{"id":"closeup","name":"Closeup","bv":22,"dpp":17,"content":41,"authority":38,"themes":44,"schema":39,"geoStrength":40,"citation":19},{"id":"colgate","name":"Colgate","bv":61,"dpp":54,"content":82,"authority":79,"themes":80,"schema":76,"geoStrength":79,"citation":58},{"id":"sensodyne","name":"Sensodyne","bv":48,"dpp":41,"content":71,"authority":74,"themes":62,"schema":68,"geoStrength":69,"citation":44},{"id":"perfora","name":"Perfora","bv":31,"dpp":34,"content":66,"authority":45,"themes":58,"schema":61,"geoStrength":55,"citation":33},{"id":"oralb","name":"Oral-B","bv":37,"dpp":30,"content":59,"authority":64,"themes":50,"schema":57,"geoStrength":57,"citation":35},{"id":"pepsodent","name":"Pepsodent","bv":18,"dpp":14,"content":36,"authority":33,"themes":34,"schema":31,"geoStrength":34,"citation":15}],"radarDimensions":["Content","Authority","Themes","Schema","GEO Strength","Citation"],"themeCoverage":[{"theme":"Fresh breath / bad breath","closeup":58,"colgate":71,"sensodyne":40,"perfora":52,"leader":"Colgate"},{"theme":"Whitening","closeup":47,"colgate":78,"sensodyne":35,"perfora":69,"leader":"Colgate"},{"theme":"Sensitivity","closeup":12,"colgate":64,"sensodyne":92,"perfora":41,"leader":"Sensodyne"},{"theme":"Cavity / germ protection","closeup":28,"colgate":88,"sensodyne":55,"perfora":44,"leader":"Colgate"},{"theme":"Natural / herbal","closeup":22,"colgate":60,"sensodyne":20,"perfora":58,"leader":"Colgate"},{"theme":"Confidence / lifestyle","closeup":74,"colgate":38,"sensodyne":18,"perfora":49,"leader":"Closeup"}],"insights":["Closeup owns 'confidence / lifestyle' but that theme drives few high-intent AI queries — the volume sits in fresh breath, whitening and comparisons where Colgate dominates.","Colgate's citation coverage (58%) is 3x Closeup's (19%) — driven by a deep answer-style content library and dentist authority.","Sensodyne wins purely on the sensitivity vertical; Closeup should not fight there.","Perfora punches above its size on schema and content despite low authority — a D2C playbook Closeup can copy fast.","Pepsodent (HUL sibling) is weakest — an opportunity to consolidate HUL oral-care authority rather than compete."]},"gap":{"method":"Cross-references the prompt universe (Step 3) against the content inventory (Step 2) and competitor coverage (Step 4). A gap = a prompt cluster with demand where Closeup has no AI-citable asset but a competitor does.","summary":{"totalGaps":36,"highPriority":14,"estCitationsAtRisk":21},"categories":[{"type":"Missing Buying Guides","icon":"book-open","count":6,"priority":"high","items":["Best toothpaste for fresh breath in India — 2026 buying guide","How to choose a whitening toothpaste (ingredients explained)","Toothpaste buying guide for young adults / Gen Z","Family toothpaste buying guide on a budget"]},{"type":"Missing Comparison Pages","icon":"git-compare","count":7,"priority":"high","items":["Closeup vs Colgate (fresh breath & whitening)","Closeup vs Pepsodent","Gel vs whitening vs herbal toothpaste","Closeup Diamond Attraction vs Colgate Visible White"]},{"type":"Missing FAQs","icon":"help-circle","count":8,"priority":"high","items":["Is Closeup good for whitening? (with FAQPage schema)","Is Closeup safe for daily/long-term use?","Does Closeup remove bad breath permanently?","Is Closeup suitable for sensitive teeth?"]},{"type":"Missing HowTo Articles","icon":"list-checks","count":5,"priority":"med","items":["How to get fresh breath that lasts all day (HowTo schema)","How to whiten teeth at home safely","Correct brushing technique for fresh breath"]},{"type":"Missing Blogs","icon":"file-text","count":4,"priority":"med","items":["What causes bad breath — and what actually fixes it","The science of gel toothpaste","Fresh breath before a date: a confidence checklist"]},{"type":"Missing Ingredient Pages","icon":"flask-conical","count":3,"priority":"med","items":["Fluoride in toothpaste — what it does","Microshine / whitening actives explained","Mint & cooling agents for fresh breath"]},{"type":"Missing Videos (transcribed)","icon":"play-circle","count":2,"priority":"low","items":["60-sec: how Closeup gel works (with transcript + VideoObject)","Whitening routine demo (transcribed)"]},{"type":"Missing Landing Pages","icon":"layout-template","count":1,"priority":"low","items":["Fresh breath hub — pillar page linking all clusters"]}]},"technical":{"summary":{"score":47,"passed":6,"partial":5,"failed":4,"lastRun":"2026-06-24"},"groups":[{"name":"Structured data (Schema / JSON-LD)","checks":[{"name":"Product schema","status":"partial","detail":"Present on 11 of 28 SKUs. Add to all products + keep prices/availability current."},{"name":"FAQPage schema","status":"fail","detail":"Not implemented. Highest-ROI fix — AI engines lift FAQ answers directly."},{"name":"HowTo schema","status":"fail","detail":"No HowTo markup on any how-to article. Steps aren't machine-readable."},{"name":"Organization schema","status":"pass","detail":"Valid Organization + logo + sameAs present on homepage."},{"name":"Breadcrumb schema","status":"partial","detail":"On category pages only; missing on product & blog templates."},{"name":"VideoObject schema","status":"fail","detail":"None of the 12 embedded videos carry VideoObject markup or transcripts."}]},{"name":"Discoverability for AI crawlers","checks":[{"name":"robots.txt","status":"pass","detail":"Valid; does not block GPTBot, PerplexityBot, Google-Extended or ClaudeBot."},{"name":"XML sitemap","status":"pass","detail":"Present and submitted; 118 URLs, lastmod accurate."},{"name":"llms.txt","status":"fail","detail":"Missing. Add an llms.txt surfacing key product & guide URLs for AI crawlers."},{"name":"AI crawlability","status":"partial","detail":"Most pages crawlable; key content blocks render late (see JS rendering)."}]},{"name":"Social & sharing meta","checks":[{"name":"Open Graph tags","status":"pass","detail":"Complete on most templates; a few blog posts missing og:image."},{"name":"Twitter Cards","status":"partial","detail":"summary cards present; summary_large_image missing on product pages."}]},{"name":"Performance & rendering","checks":[{"name":"Core Web Vitals","status":"partial","detail":"LCP 3.1s (needs <2.5s) on mobile; CLS and INP within range."},{"name":"Page speed (mobile)","status":"pass","detail":"Lighthouse perf 78 — acceptable, hero image is the main drag."},{"name":"JavaScript rendering","status":"fail","detail":"Key product copy & FAQs injected client-side; AI crawlers may miss them. Server-render or pre-render critical content."}]}]},"authority":{"method":"AI engines cite brands that show up across trusted third-party surfaces. Each channel is scored on Closeup's current presence (0–100) and its weight in AI citation behaviour for the oral-care category in India.","overall":{"authorityScore":38,"vsCategoryAvg":-14},"channels":[{"name":"YouTube","icon":"youtube","presence":44,"weight":"High","note":"Brand campaign videos exist but few searchable how-to / review videos with transcripts."},{"name":"Instagram","icon":"instagram","presence":67,"weight":"Med","note":"Strong follower base & reels; under-used for educational, AI-quotable content."},{"name":"Reddit","icon":"message-circle","presence":12,"weight":"High","note":"Almost no presence in r/India, r/IndianSkincareAddicts oral-care threads AI scrapes."},{"name":"Amazon","icon":"shopping-cart","presence":58,"weight":"High","note":"Good listings & ratings; A+ content & Q&A under-optimised for AI lift."},{"name":"Nykaa","icon":"shopping-bag","presence":49,"weight":"Med","note":"Listed; limited reviews & editorial vs premium competitors."},{"name":"1mg / pharmacy","icon":"cross","presence":21,"weight":"Med","note":"Weak presence on health marketplaces AI cites for oral-care safety queries."},{"name":"Dental blogs / experts","icon":"stethoscope","presence":18,"weight":"High","note":"No dentist-authored or expert-reviewed content — biggest authority gap vs Colgate/Sensodyne."},{"name":"News / PR","icon":"newspaper","presence":40,"weight":"Med","note":"HUL corporate PR strong; product-level earned coverage thin."},{"name":"Creator collaborations","icon":"users","presence":55,"weight":"Med","note":"Active influencer work, but mostly entertainment not informational/citable."},{"name":"Community discussions","icon":"messages-square","presence":15,"weight":"Med","note":"Quora & forum answers about Closeup are sparse and not brand-guided."}],"priorities":["Build dentist / expert-reviewed content — the single highest-leverage authority move.","Seed authentic, helpful answers on Reddit & Quora for high-volume Awareness prompts.","Add transcribed, search-led YouTube how-to & comparison videos.","Upgrade Amazon A+ and Q&A to AI-quotable, structured answers."]},"recs":{"method":"Every finding from Steps 2–7 is scored on impact (citation upside) and effort, then sorted into Quick Wins, High-Impact, Technical, Content and Authority tracks, and sequenced into a roadmap and content calendar.","buckets":{"quickWins":[{"title":"Ship FAQPage schema on top 10 product pages","impact":5,"effort":2,"owner":"Tech/SEO","why":"AI engines lift FAQ answers verbatim; fastest path to new citations."},{"title":"Add Product schema to remaining 17 SKUs","impact":4,"effort":2,"owner":"Tech/SEO","why":"Completes product coverage; unlocks rich results & AI confidence."},{"title":"Publish llms.txt","impact":3,"effort":1,"owner":"Tech/SEO","why":"Tells AI crawlers exactly which URLs matter."},{"title":"Transcribe 12 existing videos + add VideoObject","impact":4,"effort":2,"owner":"Content","why":"Turns invisible video into citable text overnight."}],"highImpact":[{"title":"Build 'Closeup vs Colgate' comparison page","impact":5,"effort":3,"owner":"Content","why":"Highest-demand Consideration prompt where Closeup is invisible."},{"title":"Launch the Fresh Breath pillar hub","impact":5,"effort":4,"owner":"Content","why":"Owns Closeup's strongest theme with a citable pillar + cluster structure."},{"title":"Commission dentist-reviewed content programme","impact":5,"effort":4,"owner":"Authority","why":"Closes the biggest authority gap vs Colgate/Sensodyne."},{"title":"Pre-render critical product copy & FAQs","impact":4,"effort":4,"owner":"Engineering","why":"Ensures AI crawlers actually see the content."}],"technical":[{"title":"Fix mobile LCP (<2.5s)","impact":3,"effort":3,"owner":"Engineering"},{"title":"Add HowTo schema to how-to articles","impact":4,"effort":2,"owner":"Tech/SEO"},{"title":"Roll breadcrumb schema to product & blog templates","impact":2,"effort":2,"owner":"Tech/SEO"},{"title":"Complete Twitter summary_large_image + og:image","impact":2,"effort":1,"owner":"Tech/SEO"}],"content":[{"title":"6 buying guides (fresh breath, whitening, Gen Z, family…)","impact":5,"effort":4,"owner":"Content"},{"title":"7 comparison pages with comparison-table schema","impact":5,"effort":4,"owner":"Content"},{"title":"8 schema-backed FAQ sets","impact":4,"effort":3,"owner":"Content"},{"title":"3 ingredient explainer pages","impact":3,"effort":2,"owner":"Content"}],"authority":[{"title":"Reddit & Quora answer programme (high-volume prompts)","impact":4,"effort":3,"owner":"Authority"},{"title":"Dentist & expert reviewer panel","impact":5,"effort":4,"owner":"Authority"},{"title":"Search-led YouTube how-to & review series","impact":4,"effort":4,"owner":"Authority"},{"title":"Amazon A+ / Q&A AI-optimisation","impact":3,"effort":2,"owner":"Authority"}]},"roadmap":[{"phase":"Phase 1","when":"Weeks 1–2 · Foundation","items":["FAQPage + Product schema","Publish llms.txt","Transcribe videos","Fix og/twitter meta"]},{"phase":"Phase 2","when":"Weeks 3–6 · Content engine","items":["Fresh Breath pillar hub","Closeup vs Colgate / Pepsodent","First 3 buying guides","8 FAQ sets live"]},{"phase":"Phase 3","when":"Weeks 7–10 · Authority","items":["Dentist reviewer panel","Reddit/Quora programme","YouTube how-to series","Amazon A+ refresh"]},{"phase":"Phase 4","when":"Weeks 11–12 · Scale & measure","items":["Remaining guides & comparisons","Pre-render rollout","Re-run GEO audit","Report BV/DPP movement"]}],"calendar":[{"week":"W1","asset":"Fresh breath buying guide","type":"Buying Guide","channel":"Blog","stage":"Awareness"},{"week":"W2","asset":"Closeup vs Colgate","type":"Comparison","channel":"Blog","stage":"Consideration"},{"week":"W3","asset":"Is Closeup good for whitening? (FAQ)","type":"FAQ","channel":"Product","stage":"Decision"},{"week":"W4","asset":"How to get all-day fresh breath","type":"HowTo","channel":"Blog","stage":"Awareness"},{"week":"W5","asset":"Whitening toothpaste buying guide","type":"Buying Guide","channel":"Blog","stage":"Consideration"},{"week":"W6","asset":"Closeup vs Pepsodent","type":"Comparison","channel":"Blog","stage":"Consideration"},{"week":"W7","asset":"Fresh breath YouTube how-to","type":"Video","channel":"YouTube","stage":"Awareness"},{"week":"W8","asset":"Reddit answers — bad breath prompts","type":"Authority","channel":"Reddit","stage":"Awareness"}]},"content":{"method":"Pick a gap, choose an output type, and the engine assembles a draft from the brand profile, target prompt and GEO best-practice templates. Outputs are starting drafts for the marketing team to refine — not final copy.","outputTypes":[{"id":"brief","label":"Blog brief","icon":"file-text"},{"id":"faq","label":"FAQ + FAQPage schema","icon":"help-circle"},{"id":"comparison","label":"Comparison page","icon":"git-compare"},{"id":"guide","label":"Buying guide outline","icon":"book-open"},{"id":"schema","label":"JSON-LD schema","icon":"code"},{"id":"meta","label":"Meta title + description","icon":"tag"},{"id":"youtube","label":"YouTube script","icon":"youtube"},{"id":"carousel","label":"Instagram carousel","icon":"instagram"},{"id":"linkedin","label":"LinkedIn post","icon":"linkedin"},{"id":"reddit","label":"Reddit answer","icon":"message-circle"}],"topics":["Best toothpaste for fresh breath in India","Closeup vs Colgate","Is Closeup good for whitening?","How to get fresh breath that lasts all day","Whitening toothpaste buying guide","What causes bad breath and how to fix it"]},"dashboard":{"asOf":"Q2 FY26 · Jun 2026","kpis":[{"label":"Brand Visibility (BV)","value":22,"unit":"%","delta":4,"dir":"up","sub":"Share of AI answers featuring Closeup"},{"label":"Domain Prompt Presence","value":17,"unit":"%","delta":3,"dir":"up","sub":"Prompts citing closeup.in"},{"label":"GEO Readiness","value":41,"unit":"/100","delta":6,"dir":"up","sub":"Composite content+tech+authority+schema"},{"label":"Citation Coverage","value":19,"unit":"%","delta":2,"dir":"up","sub":"Prompt universe where Closeup is cited"},{"label":"Content Gaps Open","value":36,"unit":"","delta":0,"dir":"flat","sub":"14 high-priority"},{"label":"Authority Score","value":38,"unit":"/100","delta":5,"dir":"up","sub":"14 pts below category average"}],"bvTrend":{"labels":["Jan","Feb","Mar","Apr","May","Jun"],"closeup":[14,15,17,18,20,22],"colgate":[57,58,58,60,60,61],"sensodyne":[44,45,46,46,47,48]},"shareOfAnswer":{"labels":["Colgate","Sensodyne","Oral-B","Perfora","Closeup","Pepsodent"],"values":[61,48,37,31,22,18]},"funnelBV":{"labels":["Awareness","Consideration","Decision"],"closeup":[18,24,27],"category":[52,49,46]},"projection":{"labels":["Now","Wk4","Wk8","Wk12"],"baseline":[22,23,24,25],"withGeoOs":[22,29,38,47],"note":"Projected Brand Visibility if the recommended roadmap is executed in full."},"highlights":["Closeup BV up +8 pts over 6 months but still 39 pts behind Colgate.","Decision-stage prompts are Closeup's strongest funnel zone — defend and expand.","Closing the 14 high-priority gaps is projected to roughly double BV in one quarter.","Authority, not content volume, is the binding constraint vs Colgate & Sensodyne."]}}};
+GEO.load=async function(){return true;};
+</script>
+<script>
+/* ============================================================
+   charts.js — Chart.js helpers + shared theme
+   ============================================================ */
+window.GEOCharts = (function () {
+  const registry = {};
+  const C = {
+    brand: "#e6007e", brand2: "#7b2ff7", teal: "#00c2a8",
+    blue: "#2f6bff", ink: "#41506b", grid: "rgba(120,136,163,.15)",
+    colgate: "#d11f2d", sensodyne: "#0a5ca8"
+  };
+
+  function base() {
+    if (window.Chart) {
+      Chart.defaults.font.family = "Inter, sans-serif";
+      Chart.defaults.font.size = 12;
+      Chart.defaults.color = C.ink;
+      Chart.defaults.plugins.legend.labels.usePointStyle = true;
+      Chart.defaults.plugins.legend.labels.boxWidth = 8;
+      Chart.defaults.plugins.legend.labels.padding = 16;
+    }
+  }
+
+  function mount(id) {
+    if (registry[id]) { registry[id].destroy(); delete registry[id]; }
+    const el = document.getElementById(id);
+    return el ? el.getContext("2d") : null;
+  }
+  function keep(id, chart) { registry[id] = chart; return chart; }
+  function grad(ctx, hex) {
+    const g = ctx.createLinearGradient(0, 0, 0, 280);
+    g.addColorStop(0, hex + "44");
+    g.addColorStop(1, hex + "02");
+    return g;
+  }
+
+  return {
+    colors: C,
+    init: base,
+
+    line(id, labels, series) {
+      const ctx = mount(id); if (!ctx) return;
+      keep(id, new Chart(ctx, {
+        type: "line",
+        data: {
+          labels,
+          datasets: series.map(s => ({
+            label: s.label, data: s.data,
+            borderColor: s.color, backgroundColor: s.fill ? grad(ctx, s.color) : "transparent",
+            fill: !!s.fill, tension: .35, borderWidth: 2.5,
+            pointRadius: 3, pointBackgroundColor: s.color, borderDash: s.dash || []
+          }))
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: series.length > 1, position: "bottom" } },
+          scales: {
+            y: { grid: { color: C.grid }, beginAtZero: true },
+            x: { grid: { display: false } }
+          }
+        }
+      }));
+    },
+
+    bar(id, labels, data, opts) {
+      opts = opts || {};
+      const ctx = mount(id); if (!ctx) return;
+      const colors = opts.colors || labels.map((_, i) => i === opts.highlight ? C.brand : "#c9d3e6");
+      keep(id, new Chart(ctx, {
+        type: "bar",
+        data: { labels, datasets: [{ label: opts.label || "", data, backgroundColor: colors, borderRadius: 7, maxBarThickness: 46 }] },
+        options: {
+          indexAxis: opts.horizontal ? "y" : "x",
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { grid: { color: C.grid }, beginAtZero: true, max: opts.max },
+            x: { grid: { display: false }, beginAtZero: true, max: opts.horizontal ? opts.max : undefined }
+          }
+        }
+      }));
+    },
+
+    groupedBar(id, labels, series) {
+      const ctx = mount(id); if (!ctx) return;
+      keep(id, new Chart(ctx, {
+        type: "bar",
+        data: { labels, datasets: series.map(s => ({ label: s.label, data: s.data, backgroundColor: s.color, borderRadius: 6, maxBarThickness: 34 })) },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { position: "bottom" } },
+          scales: { y: { grid: { color: C.grid }, beginAtZero: true, max: 100 }, x: { grid: { display: false } } }
+        }
+      }));
+    },
+
+    radar(id, dims, series) {
+      const ctx = mount(id); if (!ctx) return;
+      keep(id, new Chart(ctx, {
+        type: "radar",
+        data: {
+          labels: dims,
+          datasets: series.map(s => ({
+            label: s.label, data: s.data,
+            borderColor: s.color, backgroundColor: s.color + "22",
+            borderWidth: 2, pointRadius: 2.5, pointBackgroundColor: s.color
+          }))
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { position: "bottom" } },
+          scales: { r: { suggestedMin: 0, suggestedMax: 100, grid: { color: C.grid }, angleLines: { color: C.grid }, pointLabels: { font: { size: 11 } }, ticks: { display: false } } }
+        }
+      }));
+    },
+
+    doughnut(id, labels, data, colors) {
+      const ctx = mount(id); if (!ctx) return;
+      keep(id, new Chart(ctx, {
+        type: "doughnut",
+        data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 0, hoverOffset: 6 }] },
+        options: { responsive: true, maintainAspectRatio: false, cutout: "66%", plugins: { legend: { position: "right" } } }
+      }));
+    },
+
+    destroyAll() { Object.keys(registry).forEach(k => { registry[k].destroy(); delete registry[k]; }); }
+  };
+})();
+
+</script>
+<script>
+/* ============================================================
+   generators.js — the GEO content engine
+   Assembles draft deliverables from the brand profile + topic.
+   Pure template logic (no backend) so it runs on GitHub Pages.
+   ============================================================ */
+window.GEOGen = (function () {
+
+  function brand() { return GEO.data.brand.brand; }
+  function comps() { return GEO.data.brand.competitors; }
+  function slug(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
+
+  function brief(topic) {
+    const b = brand();
+    return {
+      title: "Blog brief: " + topic,
+      blocks: [
+        ["Target AI prompt", topic + " — Awareness/Consideration intent for " + b.audience[0].name + "."],
+        ["Working title", topic.replace(/^./, c => c.toUpperCase()) + " (2026 guide)"],
+        ["Primary keyword", topic.toLowerCase()],
+        ["Search + answer intent", "User wants a direct, trustworthy answer they can act on. Lead with a 2–3 sentence answer AI can lift, then expand."],
+        ["Recommended structure", [
+          "H1: " + topic,
+          "TL;DR answer box (40–60 words, AI-quotable)",
+          "Why it matters / the problem",
+          "The options compared (table)",
+          "Where " + b.name + " fits (honest, specific)",
+          "Step-by-step / how to choose",
+          "FAQ block (with FAQPage schema)",
+          "Related guides (internal links)"
+        ]],
+        ["GEO must-haves", [
+          "Answer-first paragraph in first 100 words",
+          "One comparison table (AI loves tables)",
+          "FAQPage + Article schema",
+          "Author + expert-review byline for authority",
+          "Internal links to product + pillar hub"
+        ]],
+        ["Tone", b.positioning]
+      ]
+    };
+  }
+
+  function faq(topic) {
+    const b = brand();
+    const qa = [
+      ["Is " + b.name + " good for " + (topic.match(/whiten/i) ? "whitening" : "fresh breath") + "?",
+        b.name + " is formulated for " + (topic.match(/whiten/i) ? "visibly whiter teeth with its whitening actives" : "long-lasting fresh breath with its signature gel and cooling mint") + ". Used twice daily, most users notice a difference within the first two weeks."],
+      ["Is " + b.name + " safe for daily, long-term use?",
+        "Yes. " + b.name + " is a fluoride toothpaste made by " + b.parent + " and is safe for everyday use by adults. As with any toothpaste, use a pea-sized amount and don't swallow."],
+      ["Does " + b.name + " help with bad breath?",
+        "Fresh breath is " + b.name + "'s core benefit. Its gel formula and mint cooling agents tackle the odour-causing factors brushing addresses, leaving long-lasting freshness."],
+      ["How is " + b.name + " different from regular toothpaste?",
+        b.name + " pioneered gel toothpaste in India and is positioned around freshness and confidence rather than only cavity protection, making it popular with young adults."]
+    ];
+    const ld = {
+      "@context": "https://schema.org", "@type": "FAQPage",
+      mainEntity: qa.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } }))
+    };
+    return { title: "FAQ + schema: " + topic, qa, jsonld: JSON.stringify(ld, null, 2) };
+  }
+
+  function comparison(topic) {
+    const b = brand();
+    const rivalName = (topic.match(/colgate|pepsodent|sensodyne|perfora|oral-?b/i) || ["Colgate"])[0];
+    const rival = comps().find(c => c.name.toLowerCase() === rivalName.toLowerCase()) || comps()[0];
+    const rows = [
+      ["Core benefit", "Fresh breath & confidence", rival.focus],
+      ["Format", "Gel toothpaste pioneer", "Paste / range"],
+      ["Best for", b.audience[0].name, rival.type],
+      ["Whitening", "Yes — whitening variants", "Yes"],
+      ["Typical price (100g)", "₹55–₹95", "₹50–₹120"],
+      ["Made by", b.parent, "—"]
+    ];
+    return {
+      title: "Comparison: " + b.name + " vs " + rival.name,
+      verdict: b.name + " wins on fresh-breath confidence and value for young adults; " + rival.name + " leads on " + rival.focus.toLowerCase() + ". Choose based on the benefit you prioritise.",
+      headers: ["Dimension", b.name, rival.name],
+      rows,
+      jsonld: JSON.stringify({ "@context": "https://schema.org", "@type": "Article", headline: b.name + " vs " + rival.name, about: [b.name, rival.name] }, null, 2)
+    };
+  }
+
+  function guide(topic) {
+    return {
+      title: "Buying guide outline: " + topic,
+      sections: [
+        "Quick answer: the top pick in one line (AI-quotable)",
+        "What to look for (ingredients, format, benefit, price)",
+        "Comparison table of 4–5 options",
+        "Best for fresh breath / Best whitening / Best value / Best for Gen Z",
+        "How to choose — 3 quick questions",
+        "FAQ (FAQPage schema)",
+        "Verdict + where to buy"
+      ]
+    };
+  }
+
+  function schema(topic) {
+    const b = brand();
+    const ld = {
+      "@context": "https://schema.org", "@type": "Product",
+      name: b.name + " Toothpaste", brand: { "@type": "Brand", name: b.name },
+      manufacturer: b.parent,
+      description: b.positioning,
+      offers: { "@type": "Offer", priceCurrency: "INR", price: "75", availability: "https://schema.org/InStock" },
+      aggregateRating: { "@type": "AggregateRating", ratingValue: "4.3", reviewCount: "5120" }
+    };
+    return { title: "JSON-LD: " + topic, jsonld: JSON.stringify(ld, null, 2) };
+  }
+
+  function meta(topic) {
+    const b = brand();
+    const t = topic.replace(/^./, c => c.toUpperCase());
+    return {
+      title: "Meta: " + topic,
+      pairs: [
+        ["Meta title (≤60 chars)", (t + " | " + b.name).slice(0, 60)],
+        ["Meta description (≤155 chars)", (t + " — a clear, honest guide from " + b.name + ". Compare options, ingredients and prices for India in 2026.").slice(0, 155)],
+        ["URL slug", "/" + slug(topic)],
+        ["H1", t]
+      ]
+    };
+  }
+
+  function youtube(topic) {
+    const b = brand();
+    return {
+      title: "YouTube script: " + topic,
+      script:
+        "HOOK (0–5s): \"" + topic + "? Here's the honest 30-second answer.\"\n\n" +
+        "INTRO (5–15s): Quick credibility + what viewers will learn.\n\n" +
+        "BODY (15–60s):\n  • Point 1 — the problem\n  • Point 2 — what actually works\n  • Point 3 — where " + b.name + " fits (specific, not salesy)\n\n" +
+        "DEMO (60–80s): Show the routine / product in use.\n\n" +
+        "CTA (80–90s): \"Full guide linked below — and tell me your go-to in the comments.\"\n\n" +
+        "DESCRIPTION: 2–3 sentences with the target prompt + link to the pillar hub. ADD A TRANSCRIPT + VideoObject schema so AI can cite it."
+    };
+  }
+
+  function carousel(topic) {
+    return {
+      title: "Instagram carousel: " + topic,
+      slides: [
+        "Slide 1 (hook): " + topic + "? 👀",
+        "Slide 2: The mistake most people make",
+        "Slide 3: What actually works (point 1)",
+        "Slide 4: What actually works (point 2)",
+        "Slide 5: Quick routine you can copy",
+        "Slide 6: Save this + follow for more",
+        "Caption: Lead with the answer, add 5–8 niche hashtags, pin a comment linking the full guide."
+      ]
+    };
+  }
+
+  function linkedin(topic) {
+    const b = brand();
+    return {
+      title: "LinkedIn post: " + topic,
+      post:
+        "We ran a GEO audit on \"" + topic + "\" — here's what surprised us.\n\n" +
+        "AI engines increasingly answer category questions before users ever reach a brand site. For oral care in India, the brands winning those answers aren't always the biggest — they're the ones with structured, answer-first content and real expert authority.\n\n" +
+        "3 things that moved the needle for " + b.name + ":\n" +
+        "1. FAQ + comparison content AI can lift verbatim\n" +
+        "2. Schema that tells engines exactly what a page is\n" +
+        "3. Off-site authority (expert reviews, helpful community answers)\n\n" +
+        "GEO is the new shelf. What's your team doing about it?"
+    };
+  }
+
+  function reddit(topic) {
+    const b = brand();
+    return {
+      title: "Reddit answer: " + topic,
+      post:
+        "Genuinely helpful, non-salesy answer template:\n\n" +
+        "\"" + topic + " — depends what you're optimising for. For all-day fresh breath on a budget, gel formulas like " + b.name + " work well for a lot of people; for heavy whitening you'll want a dedicated whitening variant; for sensitivity go Sensodyne. I'd start with what bothers you most rather than buying on brand alone.\"\n\n" +
+        "RULES: be transparent, add real value, never spam links, disclose affiliation if asked. AI engines scrape genuinely useful Reddit threads."
+    };
+  }
+
+  const map = { brief, faq, comparison, guide, schema, meta, youtube, carousel, linkedin, reddit };
+
+  return {
+    generate(type, topic) {
+      const fn = map[type] || brief;
+      return fn(topic);
+    }
+  };
+})();
+
+</script>
+<script>
+/* ============================================================
+   steps.js — the 10 workflow step modules
+   Each step: { render() -> HTML string, after() -> wire charts/events }
+   All content reads from GEO.data (the JSON layer).
+   ============================================================ */
+window.GEOSteps = (function () {
+  const D = () => GEO.data;
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  function processMap(activeId) {
+    const steps = D().config.steps;
+    const order = steps.map(s => s.id);
+    const ai = order.indexOf(activeId);
+    return `<div class="process-map">` + steps.map((s, i) => {
+      const done = GEO.state.completed.includes(s.id);
+      const cls = done ? "done" : (i === ai ? "active" : "");
+      const line = i === 0 ? "" : `<div class="pm-line"></div>`;
+      return `<div class="pm-step ${cls}">${line}<div class="pm-node">
+        <div class="pm-circle">${done ? "✓" : s.num}</div>
+        <div class="pm-label">${esc(s.title)}</div></div></div>`;
+    }).join("") + `</div>`;
+  }
+
+  function intro(title, desc, actionsHtml) {
+    return `<div class="page-intro"><div class="pi-text">
+      <h2>${esc(title)}</h2><p>${esc(desc)}</p></div>
+      <div class="pi-actions">${actionsHtml || ""}</div></div>`;
+  }
+
+  function meter(val, teal) {
+    return `<div class="meter ${teal ? "teal" : ""}" title="${val}/100"><span style="width:${val}%"></span></div>`;
+  }
+  function statusBadge(st) {
+    const m = { pass: ["b-good", "check", "Pass"], partial: ["b-warn", "alert-triangle", "Partial"], fail: ["b-bad", "x", "Fail"] };
+    const [c, i, t] = m[st] || m.partial;
+    return `<span class="badge ${c}"><i data-lucide="${i}"></i>${t}</span>`;
+  }
+
+  /* ---------- STEP 1: Brand Setup ---------- */
+  const brand = {
+    render() {
+      const b = D().brand.brand, comps = D().brand.competitors, s = GEO.state.brand;
+      const catChips = b.categories.map(c => `<span class="chip sel">${esc(c)}</span>`).join("");
+      const audRows = b.audience.map(a => `<tr><td class="cell-strong">${esc(a.name)}</td><td>${esc(a.detail)}</td></tr>`).join("");
+      const compCards = comps.map(c => `<div class="card card-pad" style="display:flex;gap:12px;align-items:center">
+        <div style="width:38px;height:38px;border-radius:10px;background:${c.color}1a;color:${c.color};display:flex;align-items:center;justify-content:center;font-weight:800;font-family:var(--display)">${esc(c.name[0])}</div>
+        <div><div class="cell-strong">${esc(c.name)}</div><div style="font-size:12px;color:var(--ink-3)">${esc(c.type)}</div></div></div>`).join("");
+      return intro("Brand Setup", D().config.steps[0].desc,
+        `<button class="btn-soft" id="editBrand"><i data-lucide="pencil"></i><span>Edit profile</span></button>`) +
+        processMap("brand") +
+        `<div class="split" style="margin-top:6px">
+          <div class="card card-pad">
+            <div class="section-title" style="margin-top:0"><i data-lucide="building-2"></i>Brand profile</div>
+            <div class="field-row">
+              <div class="field"><label>Brand name</label><input id="b_name" value="${esc(s.name || b.name)}"></div>
+              <div class="field"><label>Website</label><input id="b_site" value="${esc(s.website || b.website)}"></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label>Country / market</label><input id="b_country" value="${esc(s.country || b.country)}"></div>
+              <div class="field"><label>Parent company</label><input value="${esc(b.parent)}" disabled></div>
+            </div>
+            <div class="field"><label>Positioning</label><textarea rows="2" id="b_pos">${esc(s.positioning || b.positioning)}</textarea></div>
+            <div class="field"><label>Product categories</label><div class="chips">${catChips}</div></div>
+          </div>
+          <div>
+            <div class="card card-pad">
+              <div class="section-title" style="margin-top:0"><i data-lucide="target"></i>Target audience</div>
+              <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Segment</th><th>Detail</th></tr></thead><tbody>${audRows}</tbody></table></div>
+            </div>
+            <div class="card card-pad" style="margin-top:16px">
+              <div class="section-title" style="margin-top:0"><i data-lucide="flag"></i>Primary GEO goals</div>
+              <ul class="list-clean">${b.primaryGoals.map(g => `<li>${esc(g)}</li>`).join("")}</ul>
+            </div>
+          </div>
+        </div>
+        <div class="section-title"><i data-lucide="swords"></i>Competitive set<span class="st-pill">${comps.length} brands</span></div>
+        <div class="grid g-5">${compCards}</div>
+        <div class="note" style="margin-top:18px"><i data-lucide="info"></i><div>This profile is the single source of truth every later step reads from — change the brand or competitors here and the whole workflow re-targets. Click <strong>Next step</strong> to run the GEO audit.</div></div>`;
+    },
+    after() {
+      const save = () => {
+        GEO.state.brand = {
+          name: document.getElementById("b_name").value,
+          website: document.getElementById("b_site").value,
+          country: document.getElementById("b_country").value,
+          positioning: document.getElementById("b_pos").value
+        };
+        GEO.persist();
+        document.getElementById("brandName").textContent = GEO.state.brand.name || "Closeup";
+        document.getElementById("brandMark").textContent = (GEO.state.brand.name || "C")[0];
+      };
+      ["b_name", "b_site", "b_country", "b_pos"].forEach(id => {
+        const el = document.getElementById(id); if (el) el.addEventListener("change", save);
+      });
+    }
+  };
+
+  /* ---------- STEP 2: GEO Audit ---------- */
+  const audit = {
+    render() {
+      const a = D().audit, su = a.summary;
+      const kpis = [
+        ["Pages crawled", su.pagesCrawled, "indexable: " + su.indexable],
+        ["AI-ready pages", su.aiReadyPct + "%", "structured for citation"],
+        ["Avg GEO readiness", su.avgGeoReadiness + "/100", "across surfaces"],
+        ["Last crawl", su.lastCrawl, "auto-refresh monthly"]
+      ].map(k => `<div class="kpi"><div class="k-label">${k[0]}</div><div class="k-val">${k[1]}</div><div class="k-sub">${k[2]}</div></div>`).join("");
+      const rows = a.inventory.map(r => `<tr>
+        <td><span style="display:flex;align-items:center;gap:8px"><i data-lucide="${r.icon}" style="width:15px;height:15px;color:var(--brand)"></i>${esc(r.type)}</span></td>
+        <td class="cell-strong">${r.count}</td>
+        <td>${r.aiReady} <span style="color:var(--ink-3)">(${Math.round(r.aiReady / r.count * 100)}%)</span></td>
+        <td style="min-width:140px">${meter(r.score)}</td>
+        <td style="color:var(--ink-2);font-size:12.5px">${esc(r.issue)}</td></tr>`).join("");
+      const finds = a.topFindings.map(f => {
+        const c = f.severity === "high" ? "b-bad" : f.severity === "med" ? "b-warn" : "b-info";
+        return `<div style="display:flex;gap:10px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--line)">
+          <span class="badge ${c}">${f.severity.toUpperCase()}</span><span style="font-size:13.5px;line-height:1.5">${esc(f.text)}</span></div>`;
+      }).join("");
+      return intro("Run GEO Audit", D().config.steps[1].desc,
+        `<button class="btn-soft" id="rerunAudit"><i data-lucide="refresh-cw"></i><span>Re-run crawl</span></button>`) +
+        `<div class="grid g-4">${kpis}</div>
+        <div class="split" style="margin-top:18px">
+          <div class="card card-pad">
+            <div class="section-title" style="margin-top:0"><i data-lucide="layers"></i>Content inventory & AI-readiness</div>
+            <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Surface</th><th>Count</th><th>AI-ready</th><th>GEO score</th><th>Key issue</th></tr></thead><tbody>${rows}</tbody></table></div>
+          </div>
+          <div>
+            <div class="card card-pad"><div class="section-title" style="margin-top:0"><i data-lucide="pie-chart"></i>Readiness by surface</div>
+              <div class="chart-box sm"><canvas id="auditChart"></canvas></div></div>
+            <div class="card card-pad" style="margin-top:16px"><div class="section-title" style="margin-top:0"><i data-lucide="alert-octagon"></i>Top findings</div>${finds}</div>
+          </div>
+        </div>`;
+    },
+    after() {
+      const inv = D().audit.inventory;
+      GEOCharts.bar("auditChart", inv.map(i => i.type.split(" ")[0]), inv.map(i => i.score), { label: "GEO score", max: 100 });
+      const r = document.getElementById("rerunAudit");
+      if (r) r.addEventListener("click", () => GEO.toast("Crawl re-queued — 142 URLs scheduled"));
+    }
+  };
+
+  /* ---------- STEP 3: Prompt Universe ---------- */
+  const prompts = {
+    render() {
+      const p = D().prompts, clusterClass = { Awareness: "aware", Consideration: "consider", Decision: "decide" };
+      const cols = p.clusters.map(cl => {
+        const cards = cl.prompts.map((pr, i) => `<div class="prompt-card" data-q="${esc(pr.q.toLowerCase())}">
+          ${esc(pr.q)}
+          <div class="pc-meta">
+            <span class="pc-tag">Vol: ${pr.vol}</span>
+            <span class="pc-tag ${pr.closeup ? "win" : "gap"}">${pr.closeup ? "Closeup cited" : "Not cited"}</span>
+            <span class="pc-tag">Wins: ${esc(pr.winner)}</span>
+          </div></div>`).join("");
+        return `<div class="fcol ${clusterClass[cl.stage]}">
+          <div class="fcol-head">${esc(cl.stage)}<span class="fc-count">${cl.prompts.length}</span></div>
+          <div style="padding:10px 12px 0;font-size:12px;color:var(--ink-3);line-height:1.4">${esc(cl.intent)}</div>
+          <div class="fcol-body">${cards}</div></div>`;
+      }).join("");
+      const cited = p.clusters.reduce((n, c) => n + c.prompts.filter(x => x.closeup).length, 0);
+      const totalP = p.meta.totalPrompts;
+      return intro("Prompt Universe Generator", D().config.steps[2].desc,
+        `<button class="btn-soft" id="addPrompt"><i data-lucide="plus"></i><span>Add prompt</span></button>`) +
+        `<div class="grid g-3" style="margin-bottom:18px">
+          <div class="kpi"><div class="k-label">Prompts mapped</div><div class="k-val">${totalP}</div><div class="k-sub">across the buying journey</div></div>
+          <div class="kpi"><div class="k-label">Closeup cited</div><div class="k-val">${cited}</div><div class="k-sub">${Math.round(cited / totalP * 100)}% of universe</div></div>
+          <div class="kpi"><div class="k-label">Citation gap</div><div class="k-val" style="color:var(--bad)">${totalP - cited}</div><div class="k-sub">prompts to win</div></div>
+        </div>
+        <div class="note" style="margin-bottom:16px"><i data-lucide="wand-2"></i><div><strong>How these were generated:</strong> ${esc(p.meta.method)} Seed attributes: ${p.meta.seedAttributes.map(esc).join(", ")}.</div></div>
+        <div class="funnel">${cols}</div>`;
+    },
+    after() {
+      const add = document.getElementById("addPrompt");
+      if (add) add.addEventListener("click", () => GEO.toast("Prompt generator: connect an AI key to expand the universe"));
+    }
+  };
+
+  /* ---------- STEP 4: Competitor Intelligence ---------- */
+  const competitors = {
+    render() {
+      const c = D().competitors, b = D().brand.competitors;
+      const rows = c.matrix.map(m => {
+        const isC = m.id === "closeup";
+        return `<tr>
+          <td class="${isC ? "cell-brand" : "cell-strong"}">${esc(m.name)}</td>
+          <td>${m.bv}%</td><td>${m.dpp}%</td>
+          <td style="min-width:110px">${meter(m.content)}</td>
+          <td style="min-width:110px">${meter(m.authority, true)}</td>
+          <td>${m.schema}</td><td>${m.geoStrength}</td>
+          <td><span class="score-pill ${m.citation < 25 ? "" : ""}">${m.citation}%</span></td></tr>`;
+      }).join("");
+      const themeRows = c.themeCoverage.map(t => `<tr>
+        <td class="cell-strong">${esc(t.theme)}</td>
+        <td style="min-width:120px">${meter(t.closeup)}</td>
+        <td>${t.colgate}</td><td>${t.sensodyne}</td><td>${t.perfora}</td>
+        <td><span class="badge ${t.leader === "Closeup" ? "b-good" : "b-muted"}">${esc(t.leader)}</span></td></tr>`).join("");
+      return intro("Competitor Intelligence", D().config.steps[3].desc, "") +
+        `<div class="split">
+          <div class="card card-pad"><div class="section-title" style="margin-top:0"><i data-lucide="bar-chart-3"></i>Brand Visibility (share of AI answer)</div>
+            <div class="chart-box"><canvas id="bvBar"></canvas></div></div>
+          <div class="card card-pad"><div class="section-title" style="margin-top:0"><i data-lucide="radar"></i>GEO strength radar</div>
+            <div class="chart-box"><canvas id="radar"></canvas></div></div>
+        </div>
+        <div class="card card-pad" style="margin-top:18px"><div class="section-title" style="margin-top:0"><i data-lucide="table"></i>Competitive GEO matrix<span class="st-pill">BV · DPP · scores</span></div>
+          <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Brand</th><th>BV</th><th>DPP</th><th>Content</th><th>Authority</th><th>Schema</th><th>GEO</th><th>Citation</th></tr></thead><tbody>${rows}</tbody></table></div></div>
+        <div class="card card-pad" style="margin-top:18px"><div class="section-title" style="margin-top:0"><i data-lucide="layers-3"></i>Theme coverage (who owns each topic)</div>
+          <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Theme</th><th>Closeup</th><th>Colgate</th><th>Sensodyne</th><th>Perfora</th><th>Leader</th></tr></thead><tbody>${themeRows}</tbody></table></div></div>
+        <div class="card card-pad" style="margin-top:18px"><div class="section-title" style="margin-top:0"><i data-lucide="lightbulb"></i>What the data says</div>
+          <ul class="list-clean">${c.insights.map(i => `<li>${esc(i)}</li>`).join("")}</ul></div>`;
+    },
+    after() {
+      const c = D().competitors, b = D().brand.competitors;
+      const colorOf = id => id === "closeup" ? GEOCharts.colors.brand : (b.find(x => x.id === id) || {}).color || "#c9d3e6";
+      GEOCharts.bar("bvBar", c.matrix.map(m => m.name), c.matrix.map(m => m.bv),
+        { colors: c.matrix.map(m => colorOf(m.id)), max: 100, label: "BV %" });
+      GEOCharts.radar("radar", c.radarDimensions, [
+        { label: "Closeup", color: GEOCharts.colors.brand, data: dimVals(c.matrix.find(m => m.id === "closeup")) },
+        { label: "Colgate", color: "#d11f2d", data: dimVals(c.matrix.find(m => m.id === "colgate")) },
+        { label: "Sensodyne", color: "#0a5ca8", data: dimVals(c.matrix.find(m => m.id === "sensodyne")) }
+      ]);
+      function dimVals(m) { return [m.content, m.authority, m.themes, m.schema, m.geoStrength, m.citation]; }
+    }
+  };
+
+  /* ---------- STEP 5: Content Gap Analysis ---------- */
+  const gaps = {
+    render() {
+      const g = D().gap, su = g.summary;
+      const cards = g.categories.map((cat, i) => {
+        const pc = cat.priority === "high" ? "b-bad" : cat.priority === "med" ? "b-warn" : "b-info";
+        const items = cat.items.map(it => `<li>${esc(it)}</li>`).join("");
+        return `<div class="card card-pad">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="section-title" style="margin:0;font-size:14px"><i data-lucide="${cat.icon}"></i>${esc(cat.type)}</div>
+            <span class="badge ${pc}">${cat.priority}</span></div>
+          <div style="font-family:var(--display);font-size:26px;font-weight:800;margin:6px 0 2px">${cat.count}<span style="font-size:13px;color:var(--ink-3);font-weight:600"> gaps</span></div>
+          <ul class="list-clean" style="margin-top:8px">${items}</ul>
+          <button class="copy-btn gen-jump" data-topic="${esc(cat.items[0])}" style="margin-top:10px"><i data-lucide="pen-line"></i>Generate in Step 9</button>
+        </div>`;
+      }).join("");
+      return intro("Content Gap Analysis", D().config.steps[4].desc, "") +
+        `<div class="grid g-3" style="margin-bottom:18px">
+          <div class="kpi"><div class="k-label">Total gaps detected</div><div class="k-val">${su.totalGaps}</div><div class="k-sub">across 8 formats</div></div>
+          <div class="kpi"><div class="k-label">High priority</div><div class="k-val" style="color:var(--bad)">${su.highPriority}</div><div class="k-sub">tackle first</div></div>
+          <div class="kpi"><div class="k-label">Citations at risk</div><div class="k-val">${su.estCitationsAtRisk}</div><div class="k-sub">prompts competitors win</div></div>
+        </div>
+        <div class="note" style="margin-bottom:16px"><i data-lucide="cpu"></i><div><strong>How gaps are found:</strong> ${esc(g.method)}</div></div>
+        <div class="grid g-2">${cards}</div>`;
+    },
+    after() {
+      document.querySelectorAll(".gen-jump").forEach(b => b.addEventListener("click", () => {
+        GEO.state.genTopic = b.dataset.topic; GEO.persist(); GEO.go("content");
+      }));
+    }
+  };
+
+  /* ---------- STEP 6: Technical GEO Audit ---------- */
+  const technical = {
+    render() {
+      const t = D().technical, su = t.summary;
+      const groups = t.groups.map(grp => {
+        const items = grp.checks.map(c => {
+          const ic = c.status === "pass" ? "ci-pass" : c.status === "fail" ? "ci-fail" : "ci-partial";
+          const icon = c.status === "pass" ? "check" : c.status === "fail" ? "x" : "alert-triangle";
+          return `<div class="check-item">
+            <div class="check-ic ${ic}"><i data-lucide="${icon}"></i></div>
+            <div class="check-body"><h4>${esc(c.name)} ${statusBadge(c.status)}</h4><p>${esc(c.detail)}</p></div></div>`;
+        }).join("");
+        return `<div class="card" style="margin-bottom:16px"><div class="section-title" style="margin:0;padding:14px 16px 4px"><i data-lucide="folder"></i>${esc(grp.name)}</div>${items}</div>`;
+      }).join("");
+      return intro("Technical GEO Audit", D().config.steps[5].desc,
+        `<button class="btn-soft" id="rerunTech"><i data-lucide="refresh-cw"></i><span>Re-scan</span></button>`) +
+        `<div class="split">
+          <div class="card card-pad" style="text-align:center"><div class="section-title" style="margin-top:0;justify-content:center"><i data-lucide="gauge"></i>Technical GEO score</div>
+            <div class="chart-box sm" style="height:200px"><canvas id="techGauge"></canvas></div>
+            <div style="font-family:var(--display);font-size:34px;font-weight:800;margin-top:-130px;margin-bottom:96px">${su.score}<span style="font-size:15px;color:var(--ink-3)">/100</span></div>
+            <div class="legend" style="justify-content:center"><span><i style="background:var(--good)"></i>${su.passed} pass</span><span><i style="background:var(--warn)"></i>${su.partial} partial</span><span><i style="background:var(--bad)"></i>${su.failed} fail</span></div>
+          </div>
+          <div class="card card-pad">
+            <div class="section-title" style="margin-top:0"><i data-lucide="zap"></i>Highest-ROI fixes</div>
+            <ul class="list-clean">
+              <li><strong>FAQPage schema</strong> — currently failing; AI engines lift FAQ answers verbatim.</li>
+              <li><strong>llms.txt</strong> — missing; a 1-hour fix that guides AI crawlers.</li>
+              <li><strong>JavaScript rendering</strong> — key content loads client-side and may be invisible to AI.</li>
+              <li><strong>VideoObject + transcripts</strong> — unlocks 12 existing videos for citation.</li>
+            </ul>
+            <div class="note"><i data-lucide="info"></i><div>Last scan ${esc(su.lastRun)}. These four fixes alone move the technical score from ${su.score} toward ~70.</div></div>
+          </div>
+        </div>
+        ${groups}`;
+    },
+    after() {
+      const su = D().technical.summary;
+      GEOCharts.doughnut("techGauge", ["Pass", "Partial", "Fail"], [su.passed, su.partial, su.failed],
+        ["#16a34a", "#f59e0b", "#ef4444"]);
+      const r = document.getElementById("rerunTech");
+      if (r) r.addEventListener("click", () => GEO.toast("Technical re-scan started"));
+    }
+  };
+
+  /* ---------- STEP 7: Authority Analysis ---------- */
+  const authority = {
+    render() {
+      const a = D().authority;
+      const rows = a.channels.map(c => {
+        const wc = c.weight === "High" ? "b-bad" : c.weight === "Med" ? "b-warn" : "b-muted";
+        return `<tr>
+          <td><span style="display:flex;align-items:center;gap:8px"><i data-lucide="${c.icon}" style="width:15px;height:15px;color:var(--brand)"></i>${esc(c.name)}</span></td>
+          <td style="min-width:130px">${meter(c.presence, true)}</td>
+          <td>${c.presence}/100</td>
+          <td><span class="badge ${wc}">${c.weight} weight</span></td>
+          <td style="font-size:12.5px;color:var(--ink-2)">${esc(c.note)}</td></tr>`;
+      }).join("");
+      return intro("Authority Analysis", D().config.steps[6].desc, "") +
+        `<div class="grid g-3" style="margin-bottom:18px">
+          <div class="kpi"><div class="k-label">Authority score</div><div class="k-val">${a.overall.authorityScore}<span style="font-size:14px;color:var(--ink-3)">/100</span></div><div class="k-delta down"><i data-lucide="trending-down"></i>${a.overall.vsCategoryAvg} vs category avg</div></div>
+          <div class="kpi"><div class="k-label">Channels tracked</div><div class="k-val">${a.channels.length}</div><div class="k-sub">owned + earned</div></div>
+          <div class="kpi"><div class="k-label">High-weight gaps</div><div class="k-val" style="color:var(--bad)">${a.channels.filter(c => c.weight === "High" && c.presence < 30).length}</div><div class="k-sub">Reddit, dental experts…</div></div>
+        </div>
+        <div class="split">
+          <div class="card card-pad"><div class="section-title" style="margin-top:0"><i data-lucide="signal"></i>Presence by channel</div><div class="chart-box"><canvas id="authChart"></canvas></div></div>
+          <div class="card card-pad"><div class="section-title" style="margin-top:0"><i data-lucide="list-ordered"></i>Authority priorities</div><ol class="list-clean" style="padding-left:20px">${a.priorities.map(p => `<li>${esc(p)}</li>`).join("")}</ol></div>
+        </div>
+        <div class="card card-pad" style="margin-top:18px"><div class="section-title" style="margin-top:0"><i data-lucide="award"></i>Channel detail</div>
+          <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Channel</th><th>Presence</th><th>Score</th><th>AI weight</th><th>Note</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+    },
+    after() {
+      const a = D().authority;
+      GEOCharts.bar("authChart", a.channels.map(c => c.name), a.channels.map(c => c.presence),
+        { horizontal: true, max: 100, colors: a.channels.map(c => c.presence < 30 ? "#ef4444" : c.presence < 55 ? "#f59e0b" : "#00c2a8") });
+    }
+  };
+
+  /* ---------- STEP 8: AI Recommendations ---------- */
+  const recommend = {
+    render() {
+      const r = D().recs;
+      function track(title, icon, arr) {
+        const cards = arr.map(t => {
+          const dots = Array.from({ length: 5 }, (_, i) => `<span class="dot ${i < t.impact ? "on" : ""}"></span>`).join("");
+          return `<div class="rec-card">
+            <h4>${esc(t.title)}</h4>
+            ${t.why ? `<p>${esc(t.why)}</p>` : ""}
+            <div class="rec-foot">
+              <span class="badge b-muted">${esc(t.owner || "")}</span>
+              <span style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-3)">Impact <span class="impact-dots">${dots}</span></span>
+            </div></div>`;
+        }).join("");
+        return `<div class="section-title"><i data-lucide="${icon}"></i>${title}<span class="st-pill">${arr.length}</span></div><div class="grid g-2">${cards}</div>`;
+      }
+      const roadmap = r.roadmap.map(p => `<div class="phase"><div class="phase-h">${esc(p.phase)}</div><div class="phase-when">${esc(p.when)}</div><ul>${p.items.map(i => `<li>${esc(i)}</li>`).join("")}</ul></div>`).join("");
+      const cal = r.calendar.map(c => `<tr><td class="cell-strong">${esc(c.week)}</td><td>${esc(c.asset)}</td><td><span class="badge b-info">${esc(c.type)}</span></td><td>${esc(c.channel)}</td><td><span class="chip">${esc(c.stage)}</span></td></tr>`).join("");
+      return intro("AI Recommendation Engine", D().config.steps[7].desc,
+        `<button class="btn-soft" id="exportPlan"><i data-lucide="download"></i><span>Export plan</span></button>`) +
+        `<div class="note" style="margin-bottom:16px"><i data-lucide="sparkles"></i><div><strong>How priorities are set:</strong> ${esc(r.method)}</div></div>` +
+        track("⚡ Quick wins", "zap", r.buckets.quickWins) +
+        track("🚀 High-impact", "rocket", r.buckets.highImpact) +
+        track("🔧 Technical fixes", "wrench", r.buckets.technical) +
+        track("✍ Content priorities", "pen-line", r.buckets.content) +
+        track("🏆 Authority priorities", "award", r.buckets.authority) +
+        `<div class="section-title"><i data-lucide="map"></i>12-week roadmap</div><div class="roadmap">${roadmap}</div>
+        <div class="section-title"><i data-lucide="calendar"></i>Content calendar (first 8 weeks)</div>
+        <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Week</th><th>Asset</th><th>Type</th><th>Channel</th><th>Stage</th></tr></thead><tbody>${cal}</tbody></table></div>`;
+    },
+    after() {
+      const e = document.getElementById("exportPlan");
+      if (e) e.addEventListener("click", () => GEO.exportJSON("closeup-geo-action-plan", D().recs));
+    }
+  };
+
+  /* ---------- STEP 9: Content Generation ---------- */
+  const content = {
+    render() {
+      const c = D().content;
+      const typeBtns = c.outputTypes.map((t, i) => `<button class="chip gen-type ${i === 0 ? "sel" : ""}" data-type="${t.id}"><i data-lucide="${t.icon}" style="width:13px;height:13px"></i>${esc(t.label)}</button>`).join("");
+      const topicOpts = c.topics.map(t => `<option ${GEO.state.genTopic === t ? "selected" : ""}>${esc(t)}</option>`).join("");
+      return intro("Content Generation", D().config.steps[8].desc, "") +
+        `<div class="note" style="margin-bottom:16px"><i data-lucide="wand-2"></i><div>${esc(c.method)}</div></div>
+        <div class="card card-pad">
+          <div class="field-row">
+            <div class="field"><label>Topic / target prompt</label><select id="genTopic">${topicOpts}</select><div class="hint">Pulled from your content gaps — or jump here from Step 5.</div></div>
+            <div class="field"><label>Action</label><button class="btn-primary" id="genRun" style="width:100%;justify-content:center"><i data-lucide="sparkles"></i><span>Generate draft</span></button></div>
+          </div>
+          <div class="field" style="margin-bottom:0"><label>Output type</label><div class="chips">${typeBtns}</div></div>
+        </div>
+        <div id="genOut" style="margin-top:18px"></div>`;
+    },
+    after() {
+      let type = "brief";
+      document.querySelectorAll(".gen-type").forEach(b => b.addEventListener("click", () => {
+        document.querySelectorAll(".gen-type").forEach(x => x.classList.remove("sel"));
+        b.classList.add("sel"); type = b.dataset.type;
+      }));
+      const run = () => {
+        const topic = document.getElementById("genTopic").value;
+        const out = GEOGen.generate(type, topic);
+        document.getElementById("genOut").innerHTML = renderOut(type, out);
+        GEO.icons();
+        document.querySelectorAll(".copy-out").forEach(btn => btn.addEventListener("click", () => {
+          navigator.clipboard && navigator.clipboard.writeText(btn.dataset.copy || "");
+          GEO.toast("Copied to clipboard");
+        }));
+      };
+      document.getElementById("genRun").addEventListener("click", run);
+      run();
+    }
+  };
+
+  function block(title, body, copyText) {
+    const cp = copyText ? `<button class="copy-btn copy-out" data-copy="${esc(copyText)}"><i data-lucide="copy"></i>Copy</button>` : "";
+    return `<div class="gen-block"><div class="gen-block-h"><h4><i data-lucide="file-text" style="width:15px;height:15px;color:var(--brand)"></i>${esc(title)}</h4>${cp}</div><div class="gen-block-b">${body}</div></div>`;
+  }
+  function ul(arr) { return `<ul class="list-clean">${arr.map(x => `<li>${esc(x)}</li>`).join("")}</ul>`; }
+
+  function renderOut(type, o) {
+    if (type === "brief") {
+      return block(o.title, o.blocks.map(([h, v]) =>
+        `<p style="margin:0 0 4px"><strong>${esc(h)}:</strong> ${Array.isArray(v) ? "" : esc(v)}</p>${Array.isArray(v) ? ul(v) : ""}`).join(""));
+    }
+    if (type === "faq") {
+      const qa = o.qa.map(([q, a]) => `<p style="margin:0 0 2px"><strong>${esc(q)}</strong></p><p style="margin:0 0 12px;color:var(--ink-2)">${esc(a)}</p>`).join("");
+      return block(o.title, qa) + block("FAQPage JSON-LD", `<pre>${esc(o.jsonld)}</pre>`, o.jsonld);
+    }
+    if (type === "comparison") {
+      const head = o.headers.map(h => `<th>${esc(h)}</th>`).join("");
+      const rows = o.rows.map(r => `<tr><td class="cell-strong">${esc(r[0])}</td><td class="cell-brand">${esc(r[1])}</td><td>${esc(r[2])}</td></tr>`).join("");
+      return block(o.title, `<p><strong>Verdict:</strong> ${esc(o.verdict)}</p><div class="tbl-wrap"><table class="tbl"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div>`) + block("Article JSON-LD", `<pre>${esc(o.jsonld)}</pre>`, o.jsonld);
+    }
+    if (type === "guide") return block(o.title, ul(o.sections));
+    if (type === "schema") return block(o.title, `<pre>${esc(o.jsonld)}</pre>`, o.jsonld);
+    if (type === "meta") return block(o.title, o.pairs.map(([h, v]) => `<p style="margin:0 0 6px"><strong>${esc(h)}:</strong> <code style="font-family:var(--mono);font-size:12px">${esc(v)}</code></p>`).join(""));
+    if (type === "youtube") return block(o.title, `<pre>${esc(o.script)}</pre>`, o.script);
+    if (type === "carousel") return block(o.title, ul(o.slides));
+    if (type === "linkedin") return block(o.title, `<pre>${esc(o.post)}</pre>`, o.post);
+    if (type === "reddit") return block(o.title, `<pre>${esc(o.post)}</pre>`, o.post);
+    return block("Output", JSON.stringify(o));
+  }
+
+  /* ---------- STEP 10: Executive Dashboard ---------- */
+  const dashboard = {
+    render() {
+      if (GEO.state.completed.length < 9) {
+        return `<div class="locked-state"><div class="ls-ic"><i data-lucide="lock"></i></div>
+          <h3>Dashboard unlocks after the workflow runs</h3>
+          <p>The executive dashboard is the <em>output</em> of the GEO process, not the start of it.<br>Complete Steps 1–9 and it assembles automatically.</p>
+          <p style="margin-top:14px"><span class="badge b-info">${GEO.state.completed.length}/9 steps done</span></p>
+          <button class="btn-primary" id="resumeBtn" style="margin:18px auto 0"><i data-lucide="play"></i><span>Resume workflow</span></button></div>`;
+      }
+      const d = D().dashboard;
+      const kpis = d.kpis.map(k => {
+        const dir = k.dir === "up" ? "up" : k.dir === "down" ? "down" : "";
+        const arr = k.dir === "up" ? "trending-up" : k.dir === "down" ? "trending-down" : "minus";
+        const delta = k.dir === "flat" ? "no change" : (k.delta > 0 ? "+" : "") + k.delta + " QoQ";
+        return `<div class="kpi"><div class="k-label">${esc(k.label)}</div>
+          <div class="k-val">${k.value}<span style="font-size:14px;color:var(--ink-3)">${esc(k.unit)}</span></div>
+          <div class="k-sub">${esc(k.sub)}</div>
+          <div class="k-delta ${dir}"><i data-lucide="${arr}"></i>${esc(delta)}</div></div>`;
+      }).join("");
+      const hi = d.highlights.map(h => `<li>${esc(h)}</li>`).join("");
+      return intro("Executive Dashboard", "Board-level view of Closeup's GEO position — generated from every prior step.",
+        `<button class="btn-soft" id="exportDash"><i data-lucide="download"></i><span>Export data</span></button>`) +
+        `<div class="grid g-3">${kpis}</div>
+        <div class="split" style="margin-top:18px">
+          <div class="card card-pad"><div class="section-title" style="margin-top:0"><i data-lucide="trending-up"></i>Brand Visibility trend (6 mo)</div><div class="chart-box"><canvas id="bvTrend"></canvas></div></div>
+          <div class="card card-pad"><div class="section-title" style="margin-top:0"><i data-lucide="pie-chart"></i>Share of AI answer</div><div class="chart-box"><canvas id="soa"></canvas></div></div>
+        </div>
+        <div class="split" style="margin-top:18px">
+          <div class="card card-pad"><div class="section-title" style="margin-top:0"><i data-lucide="filter"></i>BV by funnel stage vs category</div><div class="chart-box sm"><canvas id="funnelBv"></canvas></div></div>
+          <div class="card card-pad"><div class="section-title" style="margin-top:0"><i data-lucide="rocket"></i>Projected BV with GEO OS roadmap</div><div class="chart-box sm"><canvas id="proj"></canvas></div>
+            <div class="hint" style="margin-top:8px">${esc(d.projection.note)}</div></div>
+        </div>
+        <div class="card card-pad" style="margin-top:18px"><div class="section-title" style="margin-top:0"><i data-lucide="flag"></i>Executive highlights</div><ul class="list-clean">${hi}</ul></div>`;
+    },
+    after() {
+      if (GEO.state.completed.length < 9) {
+        const r = document.getElementById("resumeBtn");
+        if (r) r.addEventListener("click", () => GEO.go(GEO.nextIncomplete()));
+        return;
+      }
+      const d = D().dashboard, b = D().brand.competitors;
+      GEOCharts.line("bvTrend", d.bvTrend.labels, [
+        { label: "Closeup", color: GEOCharts.colors.brand, data: d.bvTrend.closeup, fill: true },
+        { label: "Colgate", color: "#d11f2d", data: d.bvTrend.colgate },
+        { label: "Sensodyne", color: "#0a5ca8", data: d.bvTrend.sensodyne }
+      ]);
+      const colorOf = name => name === "Closeup" ? GEOCharts.colors.brand : (b.find(x => x.name === name) || {}).color || "#c9d3e6";
+      GEOCharts.bar("soa", d.shareOfAnswer.labels, d.shareOfAnswer.values, { colors: d.shareOfAnswer.labels.map(colorOf), max: 100 });
+      GEOCharts.groupedBar("funnelBv", d.funnelBV.labels, [
+        { label: "Closeup", color: GEOCharts.colors.brand, data: d.funnelBV.closeup },
+        { label: "Category avg", color: "#c9d3e6", data: d.funnelBV.category }
+      ]);
+      GEOCharts.line("proj", d.projection.labels, [
+        { label: "With GEO OS", color: GEOCharts.colors.teal, data: d.projection.withGeoOs, fill: true },
+        { label: "Baseline", color: "#c9d3e6", data: d.projection.baseline, dash: [5, 4] }
+      ]);
+      const e = document.getElementById("exportDash");
+      if (e) e.addEventListener("click", () => GEO.exportJSON("closeup-geo-dashboard", d));
+    }
+  };
+
+  return { brand, audit, prompts, competitors, gaps, technical, authority, recommend, content, dashboard };
+})();
+
+</script>
+<script>
+/* ============================================================
+   app.js — shell, router, state, persistence
+   ============================================================ */
+(function () {
+  GEO.state = { current: "brand", completed: [], brand: {}, genTopic: null };
+  const LS = "closeup_geo_os_v1";
+
+  GEO.persist = function () { try { localStorage.setItem(LS, JSON.stringify(GEO.state)); } catch (e) {} };
+  GEO.restore = function () {
+    try { const s = JSON.parse(localStorage.getItem(LS)); if (s) GEO.state = Object.assign(GEO.state, s); } catch (e) {}
+  };
+
+  GEO.icons = function () { if (window.lucide) lucide.createIcons(); };
+
+  GEO.toast = function (msg) {
+    const t = document.getElementById("toast");
+    t.innerHTML = `<i data-lucide="check-circle"></i>${msg}`;
+    GEO.icons(); t.classList.add("show");
+    clearTimeout(GEO._tt); GEO._tt = setTimeout(() => t.classList.remove("show"), 2600);
+  };
+
+  GEO.exportJSON = function (name, obj) {
+    const blob = new Blob([JSON.stringify(obj, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = name + ".json"; a.click();
+    GEO.toast("Exported " + name + ".json");
+  };
+
+  function steps() { return GEO.data.config.steps; }
+  function stepById(id) { return steps().find(s => s.id === id); }
+  function stepIndex(id) { return steps().findIndex(s => s.id === id); }
+
+  GEO.nextIncomplete = function () {
+    const s = steps().find(x => x.id !== "dashboard" && !GEO.state.completed.includes(x.id));
+    return s ? s.id : "dashboard";
+  };
+
+  function markComplete(id) {
+    if (id !== "dashboard" && !GEO.state.completed.includes(id)) {
+      GEO.state.completed.push(id); GEO.persist();
+    }
+  }
+
+  function buildNav() {
+    const nav = document.getElementById("nav");
+    nav.innerHTML = steps().map(s => {
+      const done = GEO.state.completed.includes(s.id);
+      return `<a class="nav-item" data-id="${s.id}" href="#${s.id}">
+        <span class="ni-num">${s.num}</span>
+        <i data-lucide="${s.icon}"></i>
+        <span>${s.title}</span>
+        <i class="ni-check" data-lucide="check-circle"></i></a>`;
+    }).join("");
+  }
+
+  function updateNav() {
+    document.querySelectorAll(".nav-item").forEach(el => {
+      const id = el.dataset.id;
+      el.classList.toggle("active", id === GEO.state.current);
+      el.classList.toggle("done", GEO.state.completed.includes(id));
+    });
+    const total = steps().length - 1; // dashboard excluded from %
+    const pct = Math.round(GEO.state.completed.filter(c => c !== "dashboard").length / total * 100);
+    document.getElementById("wpFill").style.width = pct + "%";
+    document.getElementById("wpPercent").textContent = pct + "%";
+  }
+
+  GEO.go = function (id) {
+    if (!stepById(id)) id = "brand";
+    GEO.state.current = id; GEO.persist();
+    if (location.hash !== "#" + id) location.hash = id;
+    render(id);
+  };
+
+  function render(id) {
+    const step = stepById(id);
+    const mod = GEOSteps[id];
+    document.getElementById("crumbStep").textContent = "Step " + step.num + " / " + steps().length;
+    document.getElementById("crumbTitle").textContent = step.title;
+    const view = document.getElementById("view");
+    GEOCharts.destroyAll();
+    view.innerHTML = mod.render();
+    GEO.icons();
+    if (mod.after) try { mod.after(); } catch (e) { console.error(e); }
+    window.scrollTo(0, 0);
+
+    // nav + buttons
+    updateNav();
+    const idx = stepIndex(id);
+    const nextBtn = document.getElementById("nextBtn");
+    document.getElementById("prevBtn").disabled = idx === 0;
+    if (idx === steps().length - 1) {
+      nextBtn.querySelector("span").textContent = "Finish";
+    } else {
+      nextBtn.querySelector("span").textContent = "Next step";
+    }
+    document.getElementById("footMeta").textContent =
+      GEO.data.config.app.dataVersion + " · " + GEO.data.config.app.reportPeriod;
+  }
+
+  function next() {
+    const idx = stepIndex(GEO.state.current);
+    markComplete(GEO.state.current);
+    if (idx < steps().length - 1) GEO.go(steps()[idx + 1].id);
+    else { updateNav(); GEO.toast("Workflow complete — dashboard ready"); }
+  }
+  function prev() {
+    const idx = stepIndex(GEO.state.current);
+    if (idx > 0) GEO.go(steps()[idx - 1].id);
+  }
+
+  function wireShell() {
+    document.getElementById("nav").addEventListener("click", e => {
+      const a = e.target.closest(".nav-item"); if (!a) return;
+      e.preventDefault(); GEO.go(a.dataset.id);
+    });
+    document.getElementById("nextBtn").addEventListener("click", next);
+    document.getElementById("prevBtn").addEventListener("click", prev);
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      if (confirm("Reset the workspace? This clears your progress and edits.")) {
+        localStorage.removeItem(LS);
+        GEO.state = { current: "brand", completed: [], brand: {}, genTopic: null };
+        buildNav(); GEO.icons(); GEO.go("brand"); GEO.toast("Workspace reset");
+      }
+    });
+    document.getElementById("exportBtn").addEventListener("click", () => {
+      GEO.exportJSON("closeup-geo-os-export", { state: GEO.state, generatedAt: new Date().toISOString() });
+    });
+    window.addEventListener("hashchange", () => {
+      const id = location.hash.replace("#", "");
+      if (id && stepById(id) && id !== GEO.state.current) GEO.go(id);
+    });
+
+    // global search -> highlight matching nav / jump
+    const search = document.getElementById("globalSearch");
+    search.addEventListener("keydown", e => {
+      if (e.key !== "Enter") return;
+      const q = search.value.toLowerCase().trim(); if (!q) return;
+      const map = [
+        ["prompt", "prompts"], ["gap", "gaps"], ["competitor", "competitors"],
+        ["schema", "technical"], ["llms", "technical"], ["speed", "technical"],
+        ["reddit", "authority"], ["youtube", "authority"], ["roadmap", "recommend"],
+        ["task", "recommend"], ["faq", "content"], ["blog", "content"],
+        ["kpi", "dashboard"], ["audit", "audit"], ["brand", "brand"]
+      ];
+      const hit = map.find(([k]) => q.includes(k));
+      if (hit) { GEO.go(hit[1]); GEO.toast('Jumped to match for "' + search.value + '"'); }
+      else GEO.toast("No section matched — try: prompts, gaps, schema, reddit, roadmap");
+    });
+  }
+
+  async function boot() {
+    GEOCharts.init();
+    const ok = await GEO.load();
+    if (!ok) {
+      document.getElementById("boot").style.display = "none";
+      document.getElementById("fileWarning").style.display = "flex";
+      GEO.icons();
+      return;
+    }
+    GEO.restore();
+    // hydrate brand label
+    const bn = (GEO.state.brand && GEO.state.brand.name) || GEO.data.brand.brand.name;
+    document.getElementById("brandName").textContent = bn;
+    document.getElementById("brandMark").textContent = bn[0];
+    document.getElementById("envPill").textContent = "data: " + GEO.data.config.app.dataVersion;
+
+    buildNav(); wireShell();
+    const start = (location.hash.replace("#", "") && stepById(location.hash.replace("#", "")))
+      ? location.hash.replace("#", "") : GEO.state.current;
+
+    document.getElementById("boot").style.display = "none";
+    document.getElementById("app").style.display = "grid";
+    GEO.go(start);
+    GEO.icons();
+  }
+
+  document.addEventListener("DOMContentLoaded", boot);
+})();
+
+</script>
+</body>
+</html>
